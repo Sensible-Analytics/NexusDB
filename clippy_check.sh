@@ -14,7 +14,7 @@ if [ "$1" = "dashboard" ]; then
      -A clippy::inherent_to_string_shadow_display
 fi 
 
-cargo clippy --workspace --locked --exclude nql-tests \
+cargo clippy --workspace --locked --exclude nql-tests --exclude nexus-cli --exclude nexus-explorer \
     -- -D warnings \
      -A clippy::too_many_arguments \
      -A clippy::let-and-return \

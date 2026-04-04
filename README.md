@@ -1,29 +1,3 @@
-<div align="center">
-
-<picture>
-  <img src="/assets/full_logo.png" alt="NexusDB Logo">
-</picture>
-
-<b>NexusDB</b>: an open-source graph-vector database built from scratch in Rust.
-
-<h3>
-  <a href="https://nexus-db.com">Website</a> |
-  <a href="https://docs.nexus-db.com">Docs</a> |
-  <a href="https://discord.gg/2stgMPr5BD">Discord</a> |
-  <a href="https://x.com/nexusdb">X/Twitter</a>
-</h3>
-
-[![Docs](https://img.shields.io/badge/docs-latest-blue)](https://docs.nexus-db.com)
-[![Change Log](https://img.shields.io/badge/changelog-latest-blue)](https://docs.nexus-db.com/change-log/nexusdb)
-[![GitHub Repo stars](https://img.shields.io/github/stars/NexusDB/nexus-db)](https://github.com/NexusDB/nexus-db/stargazers)
-[![Discord](https://img.shields.io/discord/1354148209005559819?logo=discord)](https://discord.gg/2stgMPr5BD)
-[![LOC](https://img.shields.io/endpoint?url=https://ghloc.vercel.app/api/NexusDB/nexus-db/badge?filter=.rs$,.sh$&style=flat&logoColor=white&label=Lines%20of%20Code)](https://github.com/NexusDB/nexus-db)
-[![Manta Graph](https://getmanta.ai/api/badges?text=Manta%20Graph&link=nexusdb)](https://getmanta.ai/nexusdb)
-
-<a href="https://www.ycombinator.com/launches/Naz-nexusdb-the-database-for-rag-ai" target="_blank"><img src="https://www.ycombinator.com/launches/Naz-nexusdb-the-database-for-rag-ai/upvote_embed.svg" alt="Launch YC: NexusDB - The Database for Intelligence" style="margin-left: 12px;"/></a>
-
-</div>
-
 <hr>
 
 
