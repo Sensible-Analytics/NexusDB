@@ -1,5 +1,5 @@
 declare module 'force-graph' {
-  interface ForceGraphInstance {
+  export interface ForceGraphInstance {
     backgroundColor(color: string): ForceGraphInstance;
     nodeLabel(label: string | ((node: any) => string)): ForceGraphInstance;
     nodeAutoColorBy(field: string | null): ForceGraphInstance;
@@ -17,6 +17,6 @@ declare module 'force-graph' {
     _destructor?(): void;
   }
 
-  const ForceGraph: new (element: HTMLElement) => ForceGraphInstance;
+  const ForceGraph: (element: HTMLElement) => ForceGraphInstance;
   export default ForceGraph;
 }
