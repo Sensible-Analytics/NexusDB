@@ -16,6 +16,7 @@ tracing = "0.1"
 thiserror = "2"
 uuid = { version = "1", features = ["v6", "fast-rng"] }
 bumpalo = { version = "3.19.0", features = ["collections", "boxed", "serde"] }
+dirs = "6"
 
 [build-dependencies]
 tauri-build = { version = "2", features = [] }
