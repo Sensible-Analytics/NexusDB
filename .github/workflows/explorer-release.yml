@@ -46,6 +46,10 @@ jobs:
         run: |
           cd nexus-explorer
           cargo tauri build --bundles app,dmg --target aarch64-apple-darwin
+      - name: Re-sign app bundle
+        run: |
+          APP_DIR="target/aarch64-apple-darwin/release/bundle/macos/NexusDB Explorer.app"
+          codesign --force --deep --sign - --preserve-metadata=entitlements,identifier,flags "$APP_DIR"
       - name: Zip .app bundle
         run: |
           APP_DIR="target/aarch64-apple-darwin/release/bundle/macos/NexusDB Explorer.app"
