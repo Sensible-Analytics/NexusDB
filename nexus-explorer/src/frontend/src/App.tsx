@@ -6,15 +6,29 @@ import NodeList from "./components/entities/NodeList";
 import EdgeList from "./components/entities/EdgeList";
 import SchemaBrowser from "./components/sidebar/SchemaBrowser";
 import NqlEditor from "./components/editor/NqlEditor";
-import { activeView, setDatabases } from "./stores/app";
-import { dbList as apiDbList } from "./lib/api";
+import { activeView, setDatabases, setActiveDb, setNodes, setEdges, setSchema } from "./stores/app";
+import { dbList as apiDbList, nodeList, edgeList, schemaGet } from "./lib/api";
 import "./App.css";
+
+const loadDbData = async (dbName: string) => {
+  const nodes = await nodeList(dbName);
+  setNodes(nodes);
+  const edges = await edgeList(dbName);
+  setEdges(edges);
+  const schema = await schemaGet(dbName);
+  setSchema(schema);
+};
 
 const App: Component = () => {
   onMount(async () => {
     try {
       const dbs = await apiDbList();
       setDatabases(dbs);
+      if (dbs.length > 0) {
+        const firstDb = dbs[0];
+        setActiveDb(firstDb);
+        await loadDbData(firstDb);
+      }
     } catch (e) {
       // No databases open yet, that's fine
     }
