@@ -167,3 +167,15 @@ NexusDB is available as a managed service for selected users, if you're interest
 ---
 
 Just Use Nexus
+
+## Contributors
+
+<a href="https://github.com/rprabhat">
+  <img src="https://avatars.githubusercontent.com/rprabhat?s=64" width="64" height="64" alt="rprabhat" />
+</a>
+
+## Contributors
+
+<a href="https://github.com/rprabhat">
+  <img src="https://avatars.githubusercontent.com/rprabhat?s=64" width="64" height="64" alt="rprabhat" />
+</a>
