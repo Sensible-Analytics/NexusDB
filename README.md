@@ -1,31 +1,57 @@
+<p align="center">
+  <img src="assets/sensible-db-logo.svg" alt="SensibleDB Logo" width="400">
+</p>
+
+<p align="center">
+  <strong>Embedded Graph-Vector Database for AI Applications</strong>
+</p>
+
+<p align="center">
+  <a href="https://sensible-analytics.github.io/SensibleDB/">Documentation</a> ·
+  <a href="https://github.com/Sensible-Analytics/SensibleDB/issues">Issues</a> ·
+  <a href="mailto:founders@sensibledb-db.com">Contact</a>
+</p>
+
 <hr>
 
+SensibleDB, by [Sensible Analytics](https://github.com/Sensible-Analytics), is a unified database that makes it easy to build all the components needed for an AI application in a single platform.
 
-SensibleDB is a database that makes it easy to build all the components needed for an AI application in a single platform.
+You no longer need a separate application DB, vector DB, graph DB, or application layers to manage multiple storage locations. SensibleDB combines graph, vector, and embedded storage into one lightweight engine — like SQLite for knowledge graphs.
 
-You no longer need a separate application DB, vector DB, graph DB, or application layers to manage the multiple storage locations to build the backend of any application that uses AI, agents or RAG. Just use Nexus.
+### SensibleDB Explorer
 
-SensibleDB primarily operates with a graph + vector data model, but it can also support KV, documents, and relational data.
+A beautiful, interactive UI for exploring your graph data visually.
 
-### Get started with SensibleDB
+<p align="center">
+  <img src="assets/explorer-home.png" alt="SensibleDB Explorer - Home View" width="90%">
+</p>
 
-<div align="center">                                                                                                                                                                                                                                                                                                                                                                                   
-    <img src="/assets/readmeinit.gif" alt="SensibleDB CLI Demo" width="100%">                                                                                                                                                                                                                                                                                                                                              
-</div>  
+<p align="center">
+  <img src="assets/explorer-graph.png" alt="SensibleDB Explorer - Graph View" width="90%">
+</p>
 
---- 
+<p align="center">
+  <img src="assets/explorer-chat.png" alt="SensibleDB Explorer - Chat Interface" width="90%">
+</p>
+
+<p align="center">
+  <img src="assets/explorer-report.png" alt="SensibleDB Explorer - Report View" width="90%">
+</p>
+
+---
 
 ## Key Features
 
 |                         |                                                                                                                                        |
 | ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| **Built-in MCP tools**  | Nexus has built-in MCP support to allow your agents to discover data and walk the graph rather than generating human readable queries. |
-| **Built-in Embeddings** | No need to embed your data before sending it to Nexus, just use the `Embed` function to vectorize text.                                |
+| **Built-in MCP tools**  | SensibleDB has built-in MCP support to allow your agents to discover data and walk the graph rather than generating human readable queries. |
+| **Built-in Embeddings** | No need to embed your data before sending it to SensibleDB, just use the `Embed` function to vectorize text.                                |
 | **Tooling for RAG**     | SensibleDB has a built-in vector search, keyword search, and graph traversals that can be used to power any type of RAG applications.     |
 | **Secure by Default**   | SensibleDB is private by default. You can only access your data through your compiled SensibleQL queries.                                    |
-| **Ultra-Low Latency**   | Nexus is built in Rust and uses LMDB as its storage engine to provide extremely low latencies.                                         |
+| **Ultra-Low Latency**   | SensibleDB is built in Rust and uses LMDB as its storage engine to provide extremely low latencies.                                         |
 | **Type-Safe Queries**   | SensibleQL is 100% type-safe, which lets you develop and deploy with the confidence that your queries will execute in production          |
 | **Embedded Mode**       | Use SensibleDB as a lightweight embedded database in your Rust applications with zero external dependencies.                               |
+| **Visual Explorer**     | Interactive graph visualization, natural language chat, and automated report generation via the SensibleDB Explorer UI.                   |
 
 ## Embedded Mode
 
@@ -64,7 +90,7 @@ tx.commit()?;
 
 #### SensibleDB CLI
 
-Start by installing the SensibleDB CLI tool to deploy Nexus locally.
+Start by installing the SensibleDB CLI tool to deploy SensibleDB locally.
 
 1. Install CLI
 
@@ -76,13 +102,13 @@ Start by installing the SensibleDB CLI tool to deploy Nexus locally.
 
    ```bash
    mkdir <path-to-project> && cd <path-to-project>
-   nexus init
+   sensibledb init
    ```
 
 3. Write queries
 
    Open your newly created `.hx` files and start writing your schema and queries.
-   Head over to [our docs](https://docs.sensibledb-db.com/documentation/hql/hql) for more information about writing queries.
+   Head over to [our docs](https://docs.sensibledb-db.com/) for more information about writing queries.
 
    ```js
    N::User {
@@ -98,16 +124,16 @@ Start by installing the SensibleDB CLI tool to deploy Nexus locally.
 4. (Optional) Check your queries compile
 
    ```bash
-   nexus check
+   sensibledb check
    ```
 
 5. Deploy your queries to their API endpoints
 
    ```bash
-   nexus push dev
+   sensibledb push dev
    ```
 
-6. Start calling them using our [TypeScript SDK](https://github.com/SensibleDB/sensible-ts) or [Python SDK](https://github.com/SensibleDB/sensible-py). For example:
+6. Start calling them using our [TypeScript SDK](https://github.com/Sensible-Analytics/sensible-ts) or [Python SDK](https://github.com/Sensible-Analytics/sensible-py). For example:
 
    ```typescript
    import SensibleDB from "sensible-ts";
@@ -130,17 +156,47 @@ Start by installing the SensibleDB CLI tool to deploy Nexus locally.
    console.log(user);
    ```
 
+## Project Structure
+
+```
+SensibleDB/
+├── sensibledb-db/          # Core database engine (Rust)
+├── sensibledb-cli/         # Command-line interface
+├── sensibledb-explorer/    # Visual graph explorer UI (Tauri + SolidJS)
+├── sensibledb-container/   # Docker container deployment
+├── sensibledb-macros/      # Procedural macros for SensibleQL
+├── metrics/                # Telemetry and metrics
+├── nql-tests/              # Query language test suite
+├── e2e/                    # Playwright E2E tests (65 tests)
+└── docs/                   # Documentation source
+```
+
+## Documentation
+
+Full documentation is available at [https://sensible-analytics.github.io/SensibleDB/](https://sensible-analytics.github.io/SensibleDB/)
+
+- [Getting Started](https://sensible-analytics.github.io/SensibleDB/getting-started/intro/)
+- [SensibleQL Query Language](https://sensible-analytics.github.io/SensibleDB/sensibleql/overview/)
+- [SDKs](https://sensible-analytics.github.io/SensibleDB/sdks/overview/)
+- [Architecture](https://sensible-analytics.github.io/SensibleDB/architecture/diagrams/system-context/)
+
 ## License
 
-SensibleDB is licensed under the The AGPL (Affero General Public License).
+SensibleDB is licensed under the AGPL (Affero General Public License).
 
 ## Commercial Support
 
-SensibleDB is available as a managed service for selected users, if you're interested in using Nexus's managed service or want enterprise support, [contact](mailto:founders@sensibledb-db.com) us for more information and deployment options.
+SensibleDB is available as a managed service for selected users. If you're interested in using SensibleDB's managed service or want enterprise support, [contact](mailto:founders@sensibledb-db.com) us for more information and deployment options.
 
 ---
 
-Just Use Nexus
+<p align="center">
+  <a href="https://github.com/Sensible-Analytics">
+    <img src="assets/sensible-db-icon.svg" alt="Sensible Analytics" width="48">
+  </a>
+  <br>
+  <strong>Sensible Analytics</strong> — Making AI applications simpler with unified data storage.
+</p>
 
 ## Contributors
 
