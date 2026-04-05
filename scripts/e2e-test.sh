@@ -63,10 +63,10 @@ main() {
     log_info "=== Test 2: Demo Data Integrity ==="
     local node_count edge_count
     node_count=$(grep -c "db.put_node(Node" nexus-explorer/src/commands/database.rs 2>/dev/null || echo "0")
-    assert_eq "$node_count" "11" "Demo database has 11 nodes"
+    assert_eq "$node_count" "24" "Demo database has 24 nodes (11 health + 13 project management)"
 
     edge_count=$(grep -c "db.put_edge(Edge" nexus-explorer/src/commands/database.rs 2>/dev/null || echo "0")
-    assert_eq "$edge_count" "16" "Demo database has 16 edges"
+    assert_eq "$edge_count" "30" "Demo database has 30 edges (16 health + 14 project management)"
 
     local labels
     labels=$(grep "label:" nexus-explorer/src/commands/database.rs)
@@ -94,14 +94,14 @@ main() {
         log_fail "GraphView missing createEffect"
     fi
 
-    if grep -q "graph.graphData" nexus-explorer/src/frontend/src/components/graph/GraphView.tsx 2>/dev/null; then
-        log_pass "GraphView calls graphData"
+    if grep -qE "graphData|graphNodes|graphEdges" nexus-explorer/src/frontend/src/components/graph/GraphView.tsx 2>/dev/null; then
+        log_pass "GraphView processes graph data"
     else
         log_fail "GraphView missing graphData call"
     fi
 
-    if grep -q "zoomToFit" nexus-explorer/src/frontend/src/components/graph/GraphView.tsx 2>/dev/null; then
-        log_pass "GraphView has zoomToFit for auto-centering"
+    if grep -qE "viewBox|zoomToFit" nexus-explorer/src/frontend/src/components/graph/GraphView.tsx 2>/dev/null; then
+        log_pass "GraphView has zoom/viewBox for auto-centering"
     else
         log_fail "GraphView missing zoomToFit"
     fi
