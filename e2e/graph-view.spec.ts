@@ -4,7 +4,7 @@ test.describe('Graph View', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
     await page.getByRole('button', { name: 'Graph' }).first().click();
-    await page.waitForTimeout(1000);
+    await expect(page.locator('.graph-container')).toBeVisible({ timeout: 5000 });
   });
 
   test('renders graph container', async ({ page }) => {
@@ -16,27 +16,24 @@ test.describe('Graph View', () => {
   });
 
   test('renders node cards on the graph', async ({ page }) => {
-    await page.waitForTimeout(500);
-    const nodeCards = page.locator('.node-card');
-    await expect(nodeCards.first()).toBeVisible();
+    await expect(page.locator('.node-card').first()).toBeVisible({ timeout: 5000 });
   });
 
   test('node cards display type icons and labels', async ({ page }) => {
-    await page.waitForTimeout(500);
     const firstCard = page.locator('.node-card').first();
+    await expect(firstCard).toBeVisible({ timeout: 5000 });
     await expect(firstCard.locator('.node-card-icon')).toBeVisible();
     await expect(firstCard.locator('.node-card-type')).toBeVisible();
     await expect(firstCard.locator('.node-card-label')).toBeVisible();
   });
 
   test('node cards show connection count', async ({ page }) => {
-    await page.waitForTimeout(500);
-    await expect(page.locator('.node-card-connections').first()).toBeVisible();
+    await expect(page.locator('.node-card-connections').first()).toBeVisible({ timeout: 5000 });
   });
 
   test('renders edges as lines', async ({ page }) => {
-    await page.waitForTimeout(500);
     const edges = page.locator('.edge-line');
+    await expect(edges.first()).toBeVisible({ timeout: 5000 });
     const count = await edges.count();
     expect(count).toBeGreaterThan(0);
   });
@@ -59,7 +56,7 @@ test.describe('Graph View', () => {
   test('clicking suggestion chip fills query input', async ({ page }) => {
     const firstChip = page.locator('.suggestion-chip').first();
     await firstChip.click();
-    await page.waitForTimeout(200);
+    await expect(page.locator('.query-input')).toBeVisible({ timeout: 5000 });
     const inputValue = await page.locator('.query-input').inputValue();
     expect(inputValue.length).toBeGreaterThan(0);
   });

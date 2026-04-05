@@ -29,7 +29,7 @@ test.describe('Chat Interface', () => {
     const input = page.locator('.chat-input-area input');
     await input.fill('What data do I have?');
     await page.getByRole('button', { name: 'Send' }).click();
-    await page.waitForTimeout(1000);
+    await expect(page.locator('.chat-message.user').last()).toBeVisible({ timeout: 5000 });
     await expect(page.locator('.chat-message.user').last()).toContainText('What data do I have?');
   });
 
@@ -37,7 +37,7 @@ test.describe('Chat Interface', () => {
     const input = page.locator('.chat-input-area input');
     await input.fill('What data do I have?');
     await page.getByRole('button', { name: 'Send' }).click();
-    await page.waitForTimeout(2000);
+    await expect(page.locator('.chat-message.assistant').last()).toBeVisible({ timeout: 5000 });
     const responses = page.locator('.chat-message.assistant');
     const count = await responses.count();
     expect(count).toBeGreaterThan(1);
@@ -47,7 +47,7 @@ test.describe('Chat Interface', () => {
     const firstSuggestion = page.locator('.suggestion-btn').first();
     const text = await firstSuggestion.textContent();
     await firstSuggestion.click();
-    await page.waitForTimeout(1000);
+    await expect(page.locator('.chat-message.user').last()).toBeVisible({ timeout: 5000 });
     await expect(page.locator('.chat-message.user').last()).toContainText(text || '');
   });
 
@@ -55,7 +55,7 @@ test.describe('Chat Interface', () => {
     const input = page.locator('.chat-input-area input');
     await input.fill('What data do I have?');
     await page.getByRole('button', { name: 'Send' }).click();
-    await page.waitForTimeout(2000);
+    await expect(page.locator('.chat-message.assistant').last()).toBeVisible({ timeout: 5000 });
     await expect(page.locator('.follow-up-chips')).toBeVisible();
   });
 
@@ -63,7 +63,7 @@ test.describe('Chat Interface', () => {
     const input = page.locator('.chat-input-area input');
     await input.fill('What data do I have?');
     await page.getByRole('button', { name: 'Send' }).click();
-    await page.waitForTimeout(2000);
+    await expect(page.locator('.chat-message.assistant').last()).toBeVisible({ timeout: 5000 });
     const nqlToggle = page.locator('.nql-toggle-btn');
     await expect(nqlToggle).toBeVisible();
   });
