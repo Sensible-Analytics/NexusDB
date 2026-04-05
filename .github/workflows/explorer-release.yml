@@ -1,0 +1,65 @@
+name: Build and Release SensibleDB Explorer
+
+on:
+  push:
+    tags:
+      - 'explorer-v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version tag (e.g., explorer-v0.1.0)'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build-macos-aarch64:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+          cache-dependency-path: sensibledb-explorer/src/frontend/pnpm-lock.yaml
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-apple-darwin
+      - name: Install frontend dependencies
+        run: |
+          cd sensibledb-explorer/src/frontend
+          pnpm install
+      - name: Install Tauri CLI
+        run: cargo install tauri-cli --version "^2"
+      - name: Build .app and .dmg
+        run: |
+          cd sensibledb-explorer
+          cargo tauri build --bundles app,dmg --target aarch64-apple-darwin
+      - name: Re-sign app bundle
+        run: |
+          APP_DIR="target/aarch64-apple-darwin/release/bundle/macos/SensibleDB Explorer.app"
+          codesign --force --deep --sign - --preserve-metadata=entitlements,identifier,flags "$APP_DIR"
+      - name: Zip .app bundle
+        run: |
+          APP_DIR="target/aarch64-apple-darwin/release/bundle/macos/SensibleDB Explorer.app"
+          zip -r -y "target/aarch64-apple-darwin/release/bundle/macos/SensibleDB-Explorer-aarch64.app.zip" "$APP_DIR"
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            target/aarch64-apple-darwin/release/bundle/macos/SensibleDB-Explorer-aarch64.app.zip
+            target/aarch64-apple-darwin/release/bundle/dmg/SensibleDB Explorer_*.dmg
+          draft: false
+          prerelease: false
+          generate_release_notes: true

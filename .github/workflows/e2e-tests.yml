@@ -1,0 +1,58 @@
+name: E2E Test Pipeline
+
+on:
+  pull_request:
+    branches: [ main, dev ]
+    paths:
+      - 'sensibledb-explorer/**'
+      - 'sensibledb-db/**'
+      - 'e2e/**'
+      - 'playwright.config.ts'
+      - 'scripts/e2e-test.sh'
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+  push:
+    branches: [ main ]
+    paths:
+      - 'sensibledb-explorer/**'
+      - 'sensibledb-db/**'
+      - 'e2e/**'
+      - 'playwright.config.ts'
+      - 'scripts/e2e-test.sh'
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+
+jobs:
+  playwright-e2e:
+    name: Playwright E2E Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Install root dependencies
+        run: npm install
+
+      - name: Install root dependencies
+        run: npm install
+
+      - name: Install frontend dependencies
+        working-directory: sensibledb-explorer/src/frontend
+        run: pnpm install
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Playwright E2E tests
+        run: npx playwright test --reporter=list
+        env:
+          CI: true
