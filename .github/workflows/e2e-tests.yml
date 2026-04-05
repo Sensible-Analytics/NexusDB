@@ -6,6 +6,8 @@ on:
     paths:
       - 'nexus-explorer/**'
       - 'nexus-db/**'
+      - 'e2e/**'
+      - 'playwright.config.ts'
       - 'scripts/e2e-test.sh'
       - 'Cargo.toml'
       - 'Cargo.lock'
@@ -14,6 +16,18 @@ on:
     paths:
       - 'nexus-explorer/**'
       - 'nexus-db/**'
+      - 'e2e/**'
+      - 'playwright.config.ts'
+      - 'scripts/e2e-test.sh'
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+  push:
+    branches: [ main ]
+    paths:
+      - 'nexus-explorer/**'
+      - 'nexus-db/**'
+      - 'e2e/**'
+      - 'playwright.config.ts'
       - 'scripts/e2e-test.sh'
       - 'Cargo.toml'
       - 'Cargo.lock'
@@ -55,9 +69,12 @@ jobs:
         with:
           node-version: 20
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
       - name: Install frontend dependencies
         working-directory: nexus-explorer/src/frontend
-        run: npm install
+        run: pnpm install
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
