@@ -43,7 +43,7 @@ markdown_extensions:
   - pymdownx.details
 
 nav:
-  - Home: index.md
+  - Home: .
   - Getting Started:
     - Overview: getting-started/intro.md
     - Installation: getting-started/installation.md
