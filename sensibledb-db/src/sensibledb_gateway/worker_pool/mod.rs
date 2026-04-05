@@ -1,8 +1,8 @@
-use crate::sensibledb_engine::{traversal_core::NexusGraphEngine, types::GraphError};
+use crate::sensibledb_engine::{traversal_core::SensibleGraphEngine, types::GraphError};
 use crate::sensibledb_gateway::{
     gateway::CoreSetter,
     mcp::mcp::MCPToolInput,
-    router::router::{ContChan, ContMsg, HandlerInput, NexusRouter},
+    router::router::{ContChan, ContMsg, HandlerInput, SensibleRouter},
 };
 use crate::protocol::{
     NexusError, Request,
@@ -21,7 +21,7 @@ use tracing::{error, trace};
 pub struct WorkerPool {
     tx: Sender<ReqMsg>,
     write_tx: Sender<ReqMsg>,
-    router: Arc<NexusRouter>,
+    router: Arc<SensibleRouter>,
     _workers: Vec<Worker>,
     _writer_worker: Worker,
 }
@@ -29,8 +29,8 @@ pub struct WorkerPool {
 impl WorkerPool {
     pub fn new(
         workers_core_setter: Arc<CoreSetter>,
-        graph_access: Arc<NexusGraphEngine>,
-        router: Arc<NexusRouter>,
+        graph_access: Arc<SensibleGraphEngine>,
+        router: Arc<SensibleRouter>,
         io_rt: Arc<Runtime>,
     ) -> WorkerPool {
         let (req_tx, req_rx) = flume::bounded::<ReqMsg>(1000);
@@ -117,8 +117,8 @@ impl Worker {
     pub fn start(
         rx: Receiver<ReqMsg>,
         core_setter: Arc<CoreSetter>,
-        graph_access: Arc<NexusGraphEngine>,
-        router: Arc<NexusRouter>,
+        graph_access: Arc<SensibleGraphEngine>,
+        router: Arc<SensibleRouter>,
         io_rt: Arc<Runtime>,
         (cont_tx, cont_rx): (ContChan, Receiver<ContMsg>),
         parity: bool,
@@ -218,8 +218,8 @@ impl Worker {
     /// Note: No core pinning for the writer - let the OS scheduler handle it
     pub fn start_writer(
         rx: Receiver<ReqMsg>,
-        graph_access: Arc<NexusGraphEngine>,
-        router: Arc<NexusRouter>,
+        graph_access: Arc<SensibleGraphEngine>,
+        router: Arc<SensibleRouter>,
         io_rt: Arc<Runtime>,
     ) -> Worker {
         let handle = std::thread::spawn(move || {
@@ -275,8 +275,8 @@ impl Worker {
 fn request_mapper(
     request: Request,
     ret_chan: RetChan,
-    graph_access: Arc<NexusGraphEngine>,
-    router: &NexusRouter,
+    graph_access: Arc<SensibleGraphEngine>,
+    router: &SensibleRouter,
     io_rt: &Runtime,
     cont_tx: &ContChan,
 ) {

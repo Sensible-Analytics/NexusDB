@@ -1,6 +1,6 @@
 use crate::{
     sensibledb_engine::{
-        storage_core::{NexusGraphStorage, storage_methods::StorageMethods},
+        storage_core::{SensibleGraphStorage, storage_methods::StorageMethods},
         traversal_core::{traversal_iter::RoTraversalIterator, traversal_value::TraversalValue},
         types::GraphError,
     },
@@ -45,7 +45,7 @@ impl<'db, 'arena, 'txn, 's, I: Iterator<Item = Result<TraversalValue<'arena>, Gr
             .filter_map(move |item| {
                 let edge_label_hash = hash_label(edge_label, None);
 
-                let prefix = NexusGraphStorage::in_edge_key(
+                let prefix = SensibleGraphStorage::in_edge_key(
                     &match item {
                         Ok(item) => item.id(),
                         Err(_) => return None,
@@ -63,7 +63,7 @@ impl<'db, 'arena, 'txn, 's, I: Iterator<Item = Result<TraversalValue<'arena>, Gr
                             Ok((_, data)) => match data.decode() {
                                 Ok(data) => {
                                     let (edge_id, _) =
-                                        match NexusGraphStorage::unpack_adj_edge_data(data) {
+                                        match SensibleGraphStorage::unpack_adj_edge_data(data) {
                                             Ok(data) => data,
                                             Err(e) => return Err(e),
                                         };

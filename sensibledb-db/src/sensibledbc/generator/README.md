@@ -1,7 +1,7 @@
 # Generator Module
 
 ## Overview
-The generator module transforms the validated NexusQL AST into executable Rust code, creating type-safe graph database operations.
+The generator module transforms the validated SensibleQL AST into executable Rust code, creating type-safe graph database operations.
 
 ## Structure
 

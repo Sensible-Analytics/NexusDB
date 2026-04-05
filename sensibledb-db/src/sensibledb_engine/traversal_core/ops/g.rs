@@ -1,5 +1,5 @@
 use crate::sensibledb_engine::{
-    storage_core::NexusGraphStorage,
+    storage_core::SensibleGraphStorage,
     traversal_core::{
         traversal_iter::{RoTraversalIterator, RwTraversalIterator},
         traversal_value::TraversalValue,
@@ -21,16 +21,16 @@ impl G {
     /// # Example
     ///
     /// ```rust,ignore
-    /// use sensibledb_db::{NexusGraphStorage, G};
+    /// use sensibledb_db::{SensibleGraphStorage, G};
     /// use bumpalo::Bump;
-    /// let storage = NexusGraphStorage::new();
+    /// let storage = SensibleGraphStorage::new();
     /// let arena = Bump::new();
     /// let txn = storage.graph_env.read_txn().unwrap();
     /// let traversal = G::new(&storage, &txn, &arena);
     /// ```
     #[inline]
     pub fn new<'db: 'arena, 'arena: 'txn, 'txn>(
-        storage: &'db NexusGraphStorage,
+        storage: &'db SensibleGraphStorage,
         txn: &'txn RoTxn<'db>,
         arena: &'arena bumpalo::Bump,
     ) -> RoTraversalIterator<
@@ -61,15 +61,15 @@ impl G {
     /// # Example
     ///
     /// ```rust,ignore
-    /// use sensibledb_db::{NexusGraphStorage, G, TraversalValue};
+    /// use sensibledb_db::{SensibleGraphStorage, G, TraversalValue};
     /// use bumpalo::Bump;
-    /// let storage = NexusGraphStorage::new();
+    /// let storage = SensibleGraphStorage::new();
     /// let arena = Bump::new();
     /// let txn = storage.graph_env.read_txn().unwrap();
     /// let traversal = G::from_iter(&storage, &txn, vec![TraversalValue::Empty], &arena);
     /// ```
     pub fn from_iter<'db: 'arena, 'arena: 'txn, 'txn>(
-        storage: &'db NexusGraphStorage,
+        storage: &'db SensibleGraphStorage,
         txn: &'txn RoTxn<'db>,
         items: impl Iterator<Item = TraversalValue<'arena>>,
         arena: &'arena bumpalo::Bump,
@@ -98,15 +98,15 @@ impl G {
     /// # Example
     ///
     /// ```rust,ignore
-    /// use sensibledb_db::{NexusGraphStorage, G};
+    /// use sensibledb_db::{SensibleGraphStorage, G};
     /// use bumpalo::Bump;
-    /// let storage = NexusGraphStorage::new();
+    /// let storage = SensibleGraphStorage::new();
     /// let arena = Bump::new();
     /// let txn = storage.graph_env.write_txn().unwrap();
     /// let traversal = G::new_mut(&storage, &arena, &mut txn);
     /// ```
     pub fn new_mut<'db: 'arena, 'arena: 'txn, 'txn>(
-        storage: &'db NexusGraphStorage,
+        storage: &'db SensibleGraphStorage,
         arena: &'arena bumpalo::Bump,
         txn: &'txn mut RwTxn<'db>,
     ) -> RwTraversalIterator<
@@ -127,7 +127,7 @@ impl G {
     }
 
     pub fn new_mut_from_iter<'db: 'arena, 'arena: 'txn, 'txn>(
-        storage: &'db NexusGraphStorage,
+        storage: &'db SensibleGraphStorage,
         txn: &'txn mut RwTxn<'db>,
         items: impl Iterator<Item = TraversalValue<'arena>>,
         arena: &'arena bumpalo::Bump,
@@ -147,7 +147,7 @@ impl G {
 
     /// Create a mutable traversal from a single TraversalValue
     pub fn new_mut_from<'db: 'arena, 'arena: 'txn, 'txn>(
-        storage: &'db NexusGraphStorage,
+        storage: &'db SensibleGraphStorage,
         txn: &'txn mut RwTxn<'db>,
         item: TraversalValue<'arena>,
         arena: &'arena bumpalo::Bump,

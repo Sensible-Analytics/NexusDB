@@ -11,7 +11,7 @@ SensibleDB eliminates the complexity of managing multiple specialized databases 
 - **Graph-Vector Data Model**: Native support for both graph relationships and vector embeddings
 - **Rust Implementation**: Memory-safe, high-performance systems programming language
 - **Embedded Mode**: Zero-dependency usage in Rust applications
-- **Type-Safe Queries**: Compile-time validation of NexusQL queries
+- **Type-Safe Queries**: Compile-time validation of SensibleQL queries
 - **Built-in AI Tooling**: MCP support, automatic embeddings, vector search
 - **Secure by Design**: Private by default access through compiled queries
 

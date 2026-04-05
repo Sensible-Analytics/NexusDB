@@ -5,8 +5,8 @@
 - [Getting Started](#getting-started)
   - [Overview](#overview)
   - [Installation](#installation)
-- [NexusQL Query Language](#nexusql-query-language)
-  - [Overview](#nexusql-overview)
+- [SensibleQL Query Language](#sensibleql-query-language)
+  - [Overview](#sensibleql-overview)
   - [Schema Definition](#schema-definition)
   - [CRUD Operations](#crud-operations)
   - [Graph Traversals](#graph-traversals)
@@ -141,15 +141,15 @@ curl -X POST http://localhost:6969/getUser \
 
 ---
 
-## NexusQL Query Language
+## SensibleQL Query Language
 
 ### Overview
 
-NexusQL is a **strongly typed, compiled query language** for SensibleDB that combines the best features of Gremlin, Cypher, and Rust.
+SensibleQL is a **strongly typed, compiled query language** for SensibleDB that combines the best features of Gremlin, Cypher, and Rust.
 
-#### Why NexusQL?
+#### Why SensibleQL?
 
-| Feature | NexusQL | Gremlin | Cypher |
+| Feature | SensibleQL | Gremlin | Cypher |
 |---------|---------|---------|--------|
 | Type Safety | Compile-time | Runtime | Runtime |
 | Syntax | Clean, concise | Verbose | Readable |
@@ -390,11 +390,11 @@ port = 6969
 ### TypeScript
 
 ```bash
-npm install nexus-ts
+npm install sensible-ts
 ```
 
 ```typescript
-import SensibleDB from "nexus-ts";
+import SensibleDB from "sensible-ts";
 const client = new SensibleDB();
 const user = await client.query("getUser", { name: "John" });
 ```
@@ -402,7 +402,7 @@ const user = await client.query("getUser", { name: "John" });
 ### Python
 
 ```bash
-pip install nexus-py
+pip install sensible-py
 ```
 
 ```python
@@ -437,7 +437,7 @@ Use `Embed()` directly in queries — no external embedding service needed.
 Vector search, BM25 keyword search, graph traversals, hybrid search with RRF, and MMR reranking.
 
 ### Security
-Private by default. Data accessible only through compiled NexusQL queries. Type-safe queries prevent injection attacks.
+Private by default. Data accessible only through compiled SensibleQL queries. Type-safe queries prevent injection attacks.
 
 ### Ultra-Low Latency
 Rust + LMDB memory-mapped B-trees for near-zero overhead access.

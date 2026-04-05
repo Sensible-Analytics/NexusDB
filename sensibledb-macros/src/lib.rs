@@ -371,7 +371,7 @@ pub fn migration(args: TokenStream, item: TokenStream) -> TokenStream {
 }
 
 #[proc_macro_attribute]
-pub fn nexus_node(_attr: TokenStream, input: TokenStream) -> TokenStream {
+pub fn sensible_node(_attr: TokenStream, input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as ItemStruct);
     let name = &input.ident;
     let fields = input.fields.iter();

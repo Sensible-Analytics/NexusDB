@@ -16,11 +16,11 @@
 |-------|-----------|-----------|
 | **Language** | Rust | Memory safety, zero-cost abstractions, ultra-low latency |
 | **Storage Engine** | LMDB (Lightning Memory-Mapped Database) | ACID transactions, zero-copy reads, embedded-friendly |
-| **Query Language** | NexusQL (custom, type-safe) | Domain-specific, compile-time validation |
+| **Query Language** | SensibleQL (custom, type-safe) | Domain-specific, compile-time validation |
 | **Build System** | Cargo (workspace) | Multi-crate dependency management |
 | **CLI** | Rust (sensibledb-cli) | Cross-platform, single binary distribution |
 | **Container Runtime** | Rust (sensibledb-container) | Server deployment mode |
-| **SDKs** | TypeScript (`nexus-ts`), Python (`nexus-py`) | Primary AI application languages |
+| **SDKs** | TypeScript (`sensible-ts`), Python (`sensible-py`) | Primary AI application languages |
 | **Documentation** | MkDocs | Static site generation from markdown |
 | **E2E Testing** | Playwright + TypeScript | Browser-level integration testing |
 
@@ -34,11 +34,11 @@ The project is organized as a Cargo workspace with the following crates:
 |-------|------|----------------|
 | `sensibledb-db` | `sensibledb-db/` | Core database engine — storage, graph, vector, transactions |
 | `sensibledb-container` | `sensibledb-container/` | Server/container runtime for hosted deployments |
-| `sensibledb-macros` | `sensibledb-macros/` | Procedural macros for NexusQL compilation |
+| `sensibledb-macros` | `sensibledb-macros/` | Procedural macros for SensibleQL compilation |
 | `sensibledb-cli` | `sensibledb-cli/` | CLI tool for project management and query deployment |
 | `sensibledb-explorer` | `sensibledb-explorer/` | Web-based data explorer UI |
 | `metrics` | `metrics/` | Observability and metrics collection |
-| `nql-tests` | `nql-tests/` | NexusQL query language test suite |
+| `nql-tests` | `nql-tests/` | SensibleQL query language test suite |
 
 ---
 
@@ -55,12 +55,12 @@ The project is organized as a Cargo workspace with the following crates:
 - Vector search uses cosine similarity as the default metric
 
 ### 4.3 Type Safety End-to-End
-- NexusQL queries MUST be 100% type-safe at compile time
+- SensibleQL queries MUST be 100% type-safe at compile time
 - Schema definitions and query validation happen before deployment
 - Runtime type errors are unacceptable
 
 ### 4.4 Security by Default
-- Data is private by default — accessible only through compiled NexusQL queries
+- Data is private by default — accessible only through compiled SensibleQL queries
 - No raw data exposure through APIs
 - AGPL license enforces copyleft for derivative works
 
@@ -90,7 +90,7 @@ The project is organized as a Cargo workspace with the following crates:
 
 ---
 
-## 6. Query Language (NexusQL) Guardrails
+## 6. Query Language (SensibleQL) Guardrails
 
 - Schema definitions use `N::TypeName { ... }` syntax
 - Queries use `QUERY name(params) => ... RETURN ...` syntax
@@ -108,9 +108,9 @@ The project is organized as a Cargo workspace with the following crates:
 - MCP tools expose graph structure, not database internals
 
 ### 7.2 SDK Contracts
-- TypeScript SDK: `nexus-ts` — primary SDK for web/Node.js applications
-- Python SDK: `nexus-py` — primary SDK for Python/AI applications
-- Both SDKs communicate via compiled query endpoints (not raw NexusQL)
+- TypeScript SDK: `sensible-ts` — primary SDK for web/Node.js applications
+- Python SDK: `sensible-py` — primary SDK for Python/AI applications
+- Both SDKs communicate via compiled query endpoints (not raw SensibleQL)
 - Default server port: `6969`
 
 ---
@@ -118,7 +118,7 @@ The project is organized as a Cargo workspace with the following crates:
 ## 8. Testing Guardrails
 
 - **Unit tests**: Co-located with source in each crate
-- **Query tests**: `nql-tests/` crate for NexusQL validation
+- **Query tests**: `nql-tests/` crate for SensibleQL validation
 - **E2E tests**: Playwright-based in `e2e/` directory
 - **Metrics**: Collected via `metrics/` crate
 
@@ -140,7 +140,7 @@ Any architectural change that affects these guardrails MUST:
 - ❌ Do NOT introduce alternative storage engines without an ADR
 - ❌ Do NOT bypass LMDB transactions for direct file I/O
 - ❌ Do NOT add runtime type checking where compile-time is possible
-- ❌ Do NOT expose raw data through APIs — always go through NexusQL
+- ❌ Do NOT expose raw data through APIs — always go through SensibleQL
 - ❌ Do NOT split graph and vector into separate systems
 - ❌ Do NOT add external dependencies to the core `sensibledb-db` crate without justification
 - ❌ Do NOT change the AGPL license without maintainer consensus

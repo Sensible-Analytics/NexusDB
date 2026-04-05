@@ -1,6 +1,6 @@
 use crate::{
     sensibledb_engine::{
-        storage_core::{NexusGraphStorage, storage_methods::StorageMethods},
+        storage_core::{SensibleGraphStorage, storage_methods::StorageMethods},
         traversal_core::{traversal_iter::RoTraversalIterator, traversal_value::TraversalValue},
         types::GraphError,
     },
@@ -56,7 +56,7 @@ impl<'db, 'arena, 'txn, 's, I: Iterator<Item = Result<TraversalValue<'arena>, Gr
             .inner
             .filter_map(move |item| {
                 let edge_label_hash = hash_label(edge_label, None);
-                let prefix = NexusGraphStorage::in_edge_key(
+                let prefix = SensibleGraphStorage::in_edge_key(
                     &match item {
                         Ok(item) => item.id(),
                         Err(_) => return None,
@@ -67,7 +67,7 @@ impl<'db, 'arena, 'txn, 's, I: Iterator<Item = Result<TraversalValue<'arena>, Gr
                 match self.storage.in_edges_db.get_duplicates(self.txn, &prefix) {
                     Ok(Some(iter)) => Some(iter.filter_map(move |item| {
                         if let Ok((_, value)) = item {
-                            let (_, item_id) = match NexusGraphStorage::unpack_adj_edge_data(value)
+                            let (_, item_id) = match SensibleGraphStorage::unpack_adj_edge_data(value)
                             {
                                 Ok(data) => data,
                                 Err(e) => {
@@ -127,7 +127,7 @@ impl<'db, 'arena, 'txn, 's, I: Iterator<Item = Result<TraversalValue<'arena>, Gr
             .inner
             .filter_map(move |item| {
                 let edge_label_hash = hash_label(edge_label, None);
-                let prefix = NexusGraphStorage::in_edge_key(
+                let prefix = SensibleGraphStorage::in_edge_key(
                     &match item {
                         Ok(item) => item.id(),
                         Err(_) => return None,
@@ -137,7 +137,7 @@ impl<'db, 'arena, 'txn, 's, I: Iterator<Item = Result<TraversalValue<'arena>, Gr
                 match self.storage.in_edges_db.get_duplicates(self.txn, &prefix) {
                     Ok(Some(iter)) => Some(iter.filter_map(move |item| {
                         if let Ok((_, data)) = item {
-                            let (_, item_id) = match NexusGraphStorage::unpack_adj_edge_data(data) {
+                            let (_, item_id) = match SensibleGraphStorage::unpack_adj_edge_data(data) {
                                 Ok(data) => data,
                                 Err(e) => {
                                     println!("Error unpacking edge data: {e:?}");

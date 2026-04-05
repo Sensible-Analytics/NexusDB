@@ -12,7 +12,7 @@ use tempfile::TempDir;
 use crate::{
     sensibledb_engine::{
         bm25::bm25::BM25,
-        storage_core::NexusGraphStorage,
+        storage_core::SensibleGraphStorage,
         traversal_core::{
             config::Config,
             ops::{
@@ -29,17 +29,17 @@ use crate::{
     utils::{id::v6_uuid, properties::ImmutablePropertiesMap},
 };
 
-fn setup_test_db(temp_dir: &TempDir) -> Arc<NexusGraphStorage> {
+fn setup_test_db(temp_dir: &TempDir) -> Arc<SensibleGraphStorage> {
     let db_path = temp_dir.path().to_str().unwrap();
 
     let mut config = Config::default();
     config.bm25 = Some(true);
 
-    let storage = NexusGraphStorage::new(db_path, config, Default::default()).unwrap();
+    let storage = SensibleGraphStorage::new(db_path, config, Default::default()).unwrap();
     Arc::new(storage)
 }
 
-fn setup_test_db_with_nodes(count: usize, temp_dir: &TempDir) -> Arc<NexusGraphStorage> {
+fn setup_test_db_with_nodes(count: usize, temp_dir: &TempDir) -> Arc<SensibleGraphStorage> {
     let storage = setup_test_db(temp_dir);
     let mut txn = storage.graph_env.write_txn().unwrap();
     let arena = Bump::new();

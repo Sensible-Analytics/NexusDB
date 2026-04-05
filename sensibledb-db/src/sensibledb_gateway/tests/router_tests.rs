@@ -1,10 +1,10 @@
 use crate::{
     sensibledb_engine::{
-        traversal_core::{NexusGraphEngine, NexusGraphEngineOpts, config::Config},
+        traversal_core::{SensibleGraphEngine, SensibleGraphEngineOpts, config::Config},
         types::GraphError,
     },
     sensibledb_gateway::router::router::{
-        Handler, HandlerFn, HandlerInput, HandlerSubmission, NexusRouter, RouterError,
+        Handler, HandlerFn, HandlerInput, HandlerSubmission, SensibleRouter, RouterError,
     },
     protocol::{Format, Request, Response, request::RequestType},
 };
@@ -12,14 +12,14 @@ use axum::body::Bytes;
 use std::{collections::HashMap, sync::Arc};
 use tempfile::TempDir;
 
-fn create_test_graph() -> (Arc<NexusGraphEngine>, TempDir) {
+fn create_test_graph() -> (Arc<SensibleGraphEngine>, TempDir) {
     let temp_dir = TempDir::new().unwrap();
-    let opts = NexusGraphEngineOpts {
+    let opts = SensibleGraphEngineOpts {
         path: temp_dir.path().to_str().unwrap().to_string(),
         config: Config::default(),
         version_info: Default::default(),
     };
-    let graph = Arc::new(NexusGraphEngine::new(opts).unwrap());
+    let graph = Arc::new(SensibleGraphEngine::new(opts).unwrap());
     (graph, temp_dir)
 }
 
@@ -47,7 +47,7 @@ fn echo_handler(input: HandlerInput) -> Result<Response, GraphError> {
 
 #[test]
 fn test_router_new_empty() {
-    let router = NexusRouter::new(None, None, None);
+    let router = SensibleRouter::new(None, None, None);
     assert!(router.routes.is_empty());
     assert!(router.mcp_routes.is_empty());
 }
@@ -57,7 +57,7 @@ fn test_router_new_with_routes() {
     let mut routes = HashMap::new();
     routes.insert("test".to_string(), Arc::new(test_handler) as HandlerFn);
 
-    let router = NexusRouter::new(Some(routes), None, None);
+    let router = SensibleRouter::new(Some(routes), None, None);
     assert_eq!(router.routes.len(), 1);
     assert!(router.routes.contains_key("test"));
     assert!(router.mcp_routes.is_empty());
@@ -70,7 +70,7 @@ fn test_router_new_with_multiple_routes() {
     routes.insert("route2".to_string(), Arc::new(error_handler) as HandlerFn);
     routes.insert("route3".to_string(), Arc::new(echo_handler) as HandlerFn);
 
-    let router = NexusRouter::new(Some(routes), None, None);
+    let router = SensibleRouter::new(Some(routes), None, None);
     assert_eq!(router.routes.len(), 3);
     assert!(router.routes.contains_key("route1"));
     assert!(router.routes.contains_key("route2"));
@@ -83,7 +83,7 @@ fn test_router_new_with_multiple_routes() {
 
 #[test]
 fn test_add_route() {
-    let mut router = NexusRouter::new(None, None, None);
+    let mut router = SensibleRouter::new(None, None, None);
     router.add_route("test", test_handler, false);
 
     assert_eq!(router.routes.len(), 1);
@@ -92,7 +92,7 @@ fn test_add_route() {
 
 #[test]
 fn test_add_multiple_routes() {
-    let mut router = NexusRouter::new(None, None, None);
+    let mut router = SensibleRouter::new(None, None, None);
     router.add_route("route1", test_handler, false);
     router.add_route("route2", error_handler, false);
     router.add_route("route3", echo_handler, false);
@@ -105,7 +105,7 @@ fn test_add_multiple_routes() {
 
 #[test]
 fn test_add_route_overwrites_existing() {
-    let mut router = NexusRouter::new(None, None, None);
+    let mut router = SensibleRouter::new(None, None, None);
     router.add_route("test", test_handler, false);
     router.add_route("test", error_handler, false);
 
@@ -115,7 +115,7 @@ fn test_add_route_overwrites_existing() {
 
 #[test]
 fn test_add_route_with_special_characters() {
-    let mut router = NexusRouter::new(None, None, None);
+    let mut router = SensibleRouter::new(None, None, None);
     router.add_route("/api/v1/query", test_handler, false);
     router.add_route("user:detail", test_handler, false);
     router.add_route("test-route", test_handler, false);
@@ -133,7 +133,7 @@ fn test_add_route_with_special_characters() {
 #[test]
 fn test_handler_invocation_success() {
     let (graph, _temp_dir) = create_test_graph();
-    let mut router = NexusRouter::new(None, None, None);
+    let mut router = SensibleRouter::new(None, None, None);
     router.add_route("test", test_handler, false);
 
     let handler = router.routes.get("test").unwrap();
@@ -158,7 +158,7 @@ fn test_handler_invocation_success() {
 #[test]
 fn test_handler_invocation_error() {
     let (graph, _temp_dir) = create_test_graph();
-    let mut router = NexusRouter::new(None, None, None);
+    let mut router = SensibleRouter::new(None, None, None);
     router.add_route("error", error_handler, false);
 
     let handler = router.routes.get("error").unwrap();
@@ -182,7 +182,7 @@ fn test_handler_invocation_error() {
 #[test]
 fn test_handler_invocation_echo() {
     let (graph, _temp_dir) = create_test_graph();
-    let mut router = NexusRouter::new(None, None, None);
+    let mut router = SensibleRouter::new(None, None, None);
     router.add_route("echo", echo_handler, false);
 
     let handler = router.routes.get("echo").unwrap();
@@ -206,7 +206,7 @@ fn test_handler_invocation_echo() {
 
 #[test]
 fn test_route_not_found() {
-    let router = NexusRouter::new(None, None, None);
+    let router = SensibleRouter::new(None, None, None);
     assert!(router.routes.get("nonexistent").is_none());
 }
 
@@ -303,7 +303,7 @@ fn test_handler_submission_creation() {
 #[test]
 fn test_router_new_with_mcp_routes() {
     let routes = HashMap::new();
-    let router = NexusRouter::new(Some(routes), None, None);
+    let router = SensibleRouter::new(Some(routes), None, None);
     assert!(router.routes.is_empty());
     assert!(router.mcp_routes.is_empty());
 }

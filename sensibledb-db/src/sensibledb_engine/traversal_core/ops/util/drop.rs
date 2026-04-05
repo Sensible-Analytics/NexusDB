@@ -1,6 +1,6 @@
 use crate::sensibledb_engine::{
     bm25::bm25::BM25,
-    storage_core::{NexusGraphStorage, storage_methods::StorageMethods},
+    storage_core::{SensibleGraphStorage, storage_methods::StorageMethods},
     traversal_core::traversal_value::TraversalValue,
     types::GraphError,
 };
@@ -16,7 +16,7 @@ where
 {
     pub fn drop_traversal(
         iter: I,
-        storage: &'db NexusGraphStorage,
+        storage: &'db SensibleGraphStorage,
         txn: &'txn mut RwTxn<'db>,
     ) -> Result<(), GraphError> {
         iter.into_iter().filter_map(|item| item.ok()).try_for_each(

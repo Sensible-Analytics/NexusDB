@@ -8,7 +8,7 @@
 // returns response
 
 use crate::{
-    sensibledb_engine::{traversal_core::NexusGraphEngine, types::GraphError},
+    sensibledb_engine::{traversal_core::SensibleGraphEngine, types::GraphError},
     sensibledb_gateway::mcp::mcp::MCPHandlerFn,
     protocol::request::RetChan,
 };
@@ -19,7 +19,7 @@ use crate::protocol::{Request, Response};
 
 pub struct HandlerInput {
     pub request: Request,
-    pub graph: Arc<NexusGraphEngine>,
+    pub graph: Arc<SensibleGraphEngine>,
 }
 
 pub type ContMsg = (
@@ -78,7 +78,7 @@ inventory::collect!(HandlerSubmission);
 /// Router for handling requests and MCP requests
 ///
 /// Standard Routes and MCP Routes are stored in a HashMap with the method and path as the key
-pub struct NexusRouter {
+pub struct SensibleRouter {
     /// Name => Function
     pub routes: HashMap<String, HandlerFn>,
     pub mcp_routes: HashMap<String, MCPHandlerFn>,
@@ -86,7 +86,7 @@ pub struct NexusRouter {
     pub write_routes: std::collections::HashSet<String>,
 }
 
-impl NexusRouter {
+impl SensibleRouter {
     /// Create a new router with a set of routes
     pub fn new(
         routes: Option<HashMap<String, HandlerFn>>,
@@ -178,12 +178,12 @@ mod tests {
     }
 
     // ============================================================================
-    // NexusRouter Tests
+    // SensibleRouter Tests
     // ============================================================================
 
     #[test]
     fn test_router_new_empty() {
-        let router = NexusRouter::new(None, None, None);
+        let router = SensibleRouter::new(None, None, None);
 
         assert!(router.routes.is_empty());
         assert!(router.mcp_routes.is_empty());
@@ -198,7 +198,7 @@ mod tests {
         let mut write_routes = HashSet::new();
         write_routes.insert("test".to_string());
 
-        let router = NexusRouter::new(Some(routes), None, Some(write_routes));
+        let router = SensibleRouter::new(Some(routes), None, Some(write_routes));
 
         assert_eq!(router.routes.len(), 1);
         assert!(router.routes.contains_key("test"));
@@ -210,7 +210,7 @@ mod tests {
         let mut write_routes = HashSet::new();
         write_routes.insert("write_op".to_string());
 
-        let router = NexusRouter::new(None, None, Some(write_routes));
+        let router = SensibleRouter::new(None, None, Some(write_routes));
 
         assert!(router.is_write_route("write_op"));
     }
@@ -220,7 +220,7 @@ mod tests {
         let mut write_routes = HashSet::new();
         write_routes.insert("write_op".to_string());
 
-        let router = NexusRouter::new(None, None, Some(write_routes));
+        let router = SensibleRouter::new(None, None, Some(write_routes));
 
         assert!(!router.is_write_route("read_op"));
         assert!(!router.is_write_route("nonexistent"));
@@ -228,7 +228,7 @@ mod tests {
 
     #[test]
     fn test_router_add_route_basic() {
-        let mut router = NexusRouter::new(None, None, None);
+        let mut router = SensibleRouter::new(None, None, None);
 
         router.add_route("new_route", dummy_handler, false);
 
@@ -238,7 +238,7 @@ mod tests {
 
     #[test]
     fn test_router_add_route_as_write() {
-        let mut router = NexusRouter::new(None, None, None);
+        let mut router = SensibleRouter::new(None, None, None);
 
         router.add_route("write_route", dummy_handler, true);
 
@@ -249,7 +249,7 @@ mod tests {
 
     #[test]
     fn test_router_add_route_overwrites() {
-        let mut router = NexusRouter::new(None, None, None);
+        let mut router = SensibleRouter::new(None, None, None);
 
         // Add initial route
         router.add_route("test", dummy_handler, false);

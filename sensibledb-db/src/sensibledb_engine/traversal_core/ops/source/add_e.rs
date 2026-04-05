@@ -1,6 +1,6 @@
 use crate::{
     sensibledb_engine::{
-        storage_core::NexusGraphStorage,
+        storage_core::SensibleGraphStorage,
         traversal_core::{traversal_iter::RwTraversalIterator, traversal_value::TraversalValue},
         types::GraphError,
     },
@@ -13,7 +13,7 @@ where
     'db: 'arena,
     'arena: 'txn,
 {
-    pub storage: &'db NexusGraphStorage,
+    pub storage: &'db SensibleGraphStorage,
     pub arena: &'arena bumpalo::Bump,
     pub txn: &'txn RwTxn<'db>,
     inner: std::iter::Once<Result<TraversalValue<'arena>, GraphError>>,
@@ -67,7 +67,7 @@ impl<'db, 'arena, 'txn, 's, I: Iterator<Item = Result<TraversalValue<'arena>, Gr
     > {
         let result = (|| -> Result<TraversalValue<'arena>, GraphError> {
             let label_hash = hash_label(label, None);
-            let out_key = NexusGraphStorage::out_edge_key(&from_node, &label_hash);
+            let out_key = SensibleGraphStorage::out_edge_key(&from_node, &label_hash);
 
             if is_unique
                 && let Some(iter) = self
@@ -79,7 +79,7 @@ impl<'db, 'arena, 'txn, 's, I: Iterator<Item = Result<TraversalValue<'arena>, Gr
                 for item in iter {
                     let (_, data) = item?;
                     let data = data.decode().map_err(|e| GraphError::DecodeError(e.to_string()))?;
-                    let (_, existing_to_node) = NexusGraphStorage::unpack_adj_edge_data(data)?;
+                    let (_, existing_to_node) = SensibleGraphStorage::unpack_adj_edge_data(data)?;
                     if existing_to_node == to_node {
                         return Err(GraphError::DuplicateKey(format!(
                             "{label}:{from_node}->{to_node}"
@@ -102,20 +102,20 @@ impl<'db, 'arena, 'txn, 's, I: Iterator<Item = Result<TraversalValue<'arena>, Gr
             self.storage.edges_db.put_with_flags(
                 self.txn,
                 PutFlags::APPEND,
-                NexusGraphStorage::edge_key(&edge.id),
+                SensibleGraphStorage::edge_key(&edge.id),
                 &bytes,
             )?;
             self.storage.out_edges_db.put_with_flags(
                 self.txn,
                 PutFlags::APPEND_DUP,
                 &out_key,
-                &NexusGraphStorage::pack_edge_data(&edge.id, &to_node),
+                &SensibleGraphStorage::pack_edge_data(&edge.id, &to_node),
             )?;
             self.storage.in_edges_db.put_with_flags(
                 self.txn,
                 PutFlags::APPEND_DUP,
-                &NexusGraphStorage::in_edge_key(&to_node, &label_hash),
-                &NexusGraphStorage::pack_edge_data(&edge.id, &from_node),
+                &SensibleGraphStorage::in_edge_key(&to_node, &label_hash),
+                &SensibleGraphStorage::pack_edge_data(&edge.id, &from_node),
             )?;
 
             Ok(TraversalValue::Edge(edge))

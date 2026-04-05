@@ -4,7 +4,7 @@ use itertools::Itertools;
 use crate::{
     sensibledb_engine::{
         bm25::bm25::HBM25Config,
-        storage_core::{NexusGraphStorage, storage_methods::StorageMethods},
+        storage_core::{SensibleGraphStorage, storage_methods::StorageMethods},
         traversal_core::{traversal_iter::RwTraversalIterator, traversal_value::TraversalValue},
         types::GraphError,
         vector_core::{hnsw::HNSW, vector::HVector},
@@ -392,7 +392,7 @@ impl<'db, 'arena, 'txn, I: Iterator<Item = Result<TraversalValue<'arena>, GraphE
         impl Iterator<Item = Result<TraversalValue<'arena>, GraphError>>,
     > {
         let label_hash = hash_label(label, None);
-        let out_key = NexusGraphStorage::out_edge_key(&from_node, &label_hash);
+        let out_key = SensibleGraphStorage::out_edge_key(&from_node, &label_hash);
         let existing_edge: Result<Option<Edge>, GraphError> = (|| {
             let Some(iter) = self
                 .storage
@@ -407,7 +407,7 @@ impl<'db, 'arena, 'txn, I: Iterator<Item = Result<TraversalValue<'arena>, GraphE
                 let data = data
                     .decode()
                     .map_err(|e| GraphError::DecodeError(e.to_string()))?;
-                let (edge_id, node_id) = NexusGraphStorage::unpack_adj_edge_data(data)?;
+                let (edge_id, node_id) = SensibleGraphStorage::unpack_adj_edge_data(data)?;
                 if node_id == to_node {
                     return Ok(Some(self.storage.get_edge(self.txn, &edge_id, self.arena)?));
                 }
@@ -461,7 +461,7 @@ impl<'db, 'arena, 'txn, I: Iterator<Item = Result<TraversalValue<'arena>, GraphE
                     let serialized_edge = edge.to_bincode_bytes()?;
                     self.storage.edges_db.put(
                         self.txn,
-                        NexusGraphStorage::edge_key(&edge.id),
+                        SensibleGraphStorage::edge_key(&edge.id),
                         &serialized_edge,
                     )?;
                     Ok(TraversalValue::Edge(edge))
@@ -493,20 +493,20 @@ impl<'db, 'arena, 'txn, I: Iterator<Item = Result<TraversalValue<'arena>, GraphE
                     self.storage.edges_db.put_with_flags(
                         self.txn,
                         PutFlags::APPEND,
-                        NexusGraphStorage::edge_key(&edge.id),
+                        SensibleGraphStorage::edge_key(&edge.id),
                         &bytes,
                     )?;
                     self.storage.out_edges_db.put_with_flags(
                         self.txn,
                         PutFlags::APPEND_DUP,
-                        &NexusGraphStorage::out_edge_key(&from_node, &label_hash),
-                        &NexusGraphStorage::pack_edge_data(&edge.id, &to_node),
+                        &SensibleGraphStorage::out_edge_key(&from_node, &label_hash),
+                        &SensibleGraphStorage::pack_edge_data(&edge.id, &to_node),
                     )?;
                     self.storage.in_edges_db.put_with_flags(
                         self.txn,
                         PutFlags::APPEND_DUP,
-                        &NexusGraphStorage::in_edge_key(&to_node, &label_hash),
-                        &NexusGraphStorage::pack_edge_data(&edge.id, &from_node),
+                        &SensibleGraphStorage::in_edge_key(&to_node, &label_hash),
+                        &SensibleGraphStorage::pack_edge_data(&edge.id, &from_node),
                     )?;
                     Ok(TraversalValue::Edge(edge))
                 }

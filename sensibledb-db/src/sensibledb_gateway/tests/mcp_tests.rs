@@ -10,7 +10,7 @@ mod mcp_tests {
         sensibledb_engine::{
             storage_core::version_info::VersionInfo,
             traversal_core::{
-                NexusGraphEngine, NexusGraphEngineOpts,
+                SensibleGraphEngine, SensibleGraphEngineOpts,
                 config::Config,
                 ops::{
                     g::G,
@@ -27,14 +27,14 @@ mod mcp_tests {
         utils::{id::uuid_str, properties::ImmutablePropertiesMap},
     };
 
-    fn setup_engine() -> (NexusGraphEngine, TempDir) {
+    fn setup_engine() -> (SensibleGraphEngine, TempDir) {
         let temp_dir = TempDir::new().unwrap();
-        let opts = NexusGraphEngineOpts {
+        let opts = SensibleGraphEngineOpts {
             path: temp_dir.path().to_str().unwrap().to_string(),
             config: Config::default(),
             version_info: VersionInfo::default(),
         };
-        let engine = NexusGraphEngine::new(opts).unwrap();
+        let engine = SensibleGraphEngine::new(opts).unwrap();
         (engine, temp_dir)
     }
 

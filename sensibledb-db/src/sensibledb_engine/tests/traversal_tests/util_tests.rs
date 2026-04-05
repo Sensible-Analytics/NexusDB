@@ -3,7 +3,7 @@ use std::sync::Arc;
 
 use crate::{
     sensibledb_engine::{
-        storage_core::NexusGraphStorage,
+        storage_core::SensibleGraphStorage,
         traversal_core::ops::{
             g::G,
             out::{out::OutAdapter, out_e::OutEdgesAdapter},
@@ -20,10 +20,10 @@ use crate::{
 use bumpalo::Bump;
 use heed3::RoTxn;
 use tempfile::TempDir;
-fn setup_test_db() -> (TempDir, Arc<NexusGraphStorage>) {
+fn setup_test_db() -> (TempDir, Arc<SensibleGraphStorage>) {
     let temp_dir = TempDir::new().unwrap();
     let db_path = temp_dir.path().to_str().unwrap();
-    let storage = NexusGraphStorage::new(
+    let storage = SensibleGraphStorage::new(
         db_path,
         crate::sensibledb_engine::traversal_core::config::Config::default(),
         Default::default(),

@@ -8,7 +8,7 @@ use serde::Deserialize;
 use sonic_rs::{JsonValueTrait, json};
 use tracing::info;
 
-use crate::sensibledb_engine::storage_core::NexusGraphStorage;
+use crate::sensibledb_engine::storage_core::SensibleGraphStorage;
 use crate::sensibledb_engine::storage_core::storage_methods::StorageMethods;
 use crate::sensibledb_engine::traversal_core::traversal_value::TraversalValue;
 use crate::sensibledb_engine::types::GraphError;
@@ -92,7 +92,7 @@ pub fn node_connections_inner(input: HandlerInput) -> Result<protocol::Response,
         .in_edges_db
         .prefix_iter(&txn, &node_id.to_be_bytes())?
         .filter_map(|result| match result {
-            Ok((_, value)) => match NexusGraphStorage::unpack_adj_edge_data(value) {
+            Ok((_, value)) => match SensibleGraphStorage::unpack_adj_edge_data(value) {
                 Ok((edge_id, from_node)) => {
                     if connected_node_ids.insert(from_node)
                         && let Ok(node) = db.get_node(&txn, &from_node, &arena)
@@ -115,7 +115,7 @@ pub fn node_connections_inner(input: HandlerInput) -> Result<protocol::Response,
         .out_edges_db
         .prefix_iter(&txn, &node_id.to_be_bytes())?
         .filter_map(|result| match result {
-            Ok((_, value)) => match NexusGraphStorage::unpack_adj_edge_data(value) {
+            Ok((_, value)) => match SensibleGraphStorage::unpack_adj_edge_data(value) {
                 Ok((edge_id, to_node)) => {
                     if connected_node_ids.insert(to_node)
                         && let Ok(node) = db.get_node(&txn, &to_node, &arena)
@@ -214,7 +214,7 @@ mod tests {
         sensibledb_engine::{
             storage_core::version_info::VersionInfo,
             traversal_core::{
-                NexusGraphEngine, NexusGraphEngineOpts,
+                SensibleGraphEngine, SensibleGraphEngineOpts,
                 config::Config,
                 ops::{
                     g::G,
@@ -230,15 +230,15 @@ mod tests {
     use std::sync::Arc;
     use tempfile::TempDir;
 
-    fn setup_test_engine() -> (NexusGraphEngine, TempDir) {
+    fn setup_test_engine() -> (SensibleGraphEngine, TempDir) {
         let temp_dir = TempDir::new().unwrap();
         let db_path = temp_dir.path().to_str().unwrap();
-        let opts = NexusGraphEngineOpts {
+        let opts = SensibleGraphEngineOpts {
             path: db_path.to_string(),
             config: Config::default(),
             version_info: VersionInfo::default(),
         };
-        let engine = NexusGraphEngine::new(opts).unwrap();
+        let engine = SensibleGraphEngine::new(opts).unwrap();
         (engine, temp_dir)
     }
 

@@ -5,7 +5,7 @@ use tempfile::TempDir;
 
 use crate::{
     sensibledb_engine::{
-        storage_core::NexusGraphStorage,
+        storage_core::SensibleGraphStorage,
         tests::traversal_tests::test_utils::props_option,
         traversal_core::{
             ops::{
@@ -31,10 +31,10 @@ use heed3::RoTxn;
 
 type Filter = fn(&HVector, &RoTxn) -> bool;
 
-fn setup_test_db() -> (TempDir, Arc<NexusGraphStorage>) {
+fn setup_test_db() -> (TempDir, Arc<SensibleGraphStorage>) {
     let temp_dir = TempDir::new().unwrap();
     let db_path = temp_dir.path().to_str().unwrap();
-    let storage = NexusGraphStorage::new(
+    let storage = SensibleGraphStorage::new(
         db_path,
         crate::sensibledb_engine::traversal_core::config::Config::default(),
         Default::default(),

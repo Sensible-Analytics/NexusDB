@@ -6,7 +6,7 @@ use tempfile::TempDir;
 use super::test_utils::props_option;
 use crate::{
     sensibledb_engine::{
-        storage_core::NexusGraphStorage,
+        storage_core::SensibleGraphStorage,
         traversal_core::{
             ops::{
                 g::G,
@@ -23,23 +23,23 @@ use crate::{
     protocol::value::Value,
 };
 
-fn setup_indexed_db() -> (TempDir, Arc<NexusGraphStorage>) {
+fn setup_indexed_db() -> (TempDir, Arc<SensibleGraphStorage>) {
     let temp_dir = TempDir::new().unwrap();
     let db_path = temp_dir.path().to_str().unwrap();
     let mut config = crate::sensibledb_engine::traversal_core::config::Config::default();
     config.graph_config.as_mut().unwrap().secondary_indices =
         Some(vec![SecondaryIndex::Index("name".to_string())]);
-    let storage = NexusGraphStorage::new(db_path, config, Default::default()).unwrap();
+    let storage = SensibleGraphStorage::new(db_path, config, Default::default()).unwrap();
     (temp_dir, Arc::new(storage))
 }
 
-fn setup_unique_indexed_db() -> (TempDir, Arc<NexusGraphStorage>) {
+fn setup_unique_indexed_db() -> (TempDir, Arc<SensibleGraphStorage>) {
     let temp_dir = TempDir::new().unwrap();
     let db_path = temp_dir.path().to_str().unwrap();
     let mut config = crate::sensibledb_engine::traversal_core::config::Config::default();
     config.graph_config.as_mut().unwrap().secondary_indices =
         Some(vec![SecondaryIndex::Unique("name".to_string())]);
-    let storage = NexusGraphStorage::new(db_path, config, Default::default()).unwrap();
+    let storage = SensibleGraphStorage::new(db_path, config, Default::default()).unwrap();
     (temp_dir, Arc::new(storage))
 }
 

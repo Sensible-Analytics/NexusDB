@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 
 use crate::sensibledb_engine::{
-    storage_core::NexusGraphStorage,
+    storage_core::SensibleGraphStorage,
     traversal_core::{traversal_iter::RoTraversalIterator, traversal_value::TraversalValue},
     types::GraphError,
 };
@@ -24,7 +24,7 @@ pub trait IntersectAdapter<'db, 'arena, 'txn>: Iterator {
     where
         F: Fn(
             TraversalValue<'arena>,
-            &'db NexusGraphStorage,
+            &'db SensibleGraphStorage,
             &'txn RoTxn<'db>,
             &'arena bumpalo::Bump,
         ) -> Result<Vec<TraversalValue<'arena>>, GraphError>;
@@ -45,7 +45,7 @@ impl<'db, 'arena, 'txn, I: Iterator<Item = Result<TraversalValue<'arena>, GraphE
     where
         F: Fn(
             TraversalValue<'arena>,
-            &'db NexusGraphStorage,
+            &'db SensibleGraphStorage,
             &'txn RoTxn<'db>,
             &'arena bumpalo::Bump,
         ) -> Result<Vec<TraversalValue<'arena>>, GraphError>,

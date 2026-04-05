@@ -10,7 +10,7 @@ use axum::routing::{get, post};
 use core_affinity::CoreId;
 use tracing::{info, trace, warn};
 
-use super::router::router::{HandlerFn, NexusRouter};
+use super::router::router::{HandlerFn, SensibleRouter};
 #[cfg(feature = "dev-instance")]
 use crate::sensibledb_gateway::builtin::all_nodes_and_edges::nodes_edges_handler;
 #[cfg(feature = "dev-instance")]
@@ -23,7 +23,7 @@ use crate::sensibledb_gateway::introspect_schema::introspect_schema_handler;
 use crate::sensibledb_gateway::worker_pool::WorkerPool;
 use crate::protocol;
 use crate::{
-    sensibledb_engine::traversal_core::{NexusGraphEngine, NexusGraphEngineOpts},
+    sensibledb_engine::traversal_core::{SensibleGraphEngine, SensibleGraphEngineOpts},
     sensibledb_gateway::mcp::mcp::MCPHandlerFn,
 };
 
@@ -33,28 +33,28 @@ impl GatewayOpts {
     pub const DEFAULT_WORKERS_PER_CORE: usize = 8;
 }
 
-pub struct NexusGateway {
+pub struct SensibleGateway {
     pub(crate) address: String,
     pub(crate) workers_per_core: usize,
-    pub(crate) graph_access: Arc<NexusGraphEngine>,
-    pub(crate) router: Arc<NexusRouter>,
-    pub(crate) opts: Option<NexusGraphEngineOpts>,
+    pub(crate) graph_access: Arc<SensibleGraphEngine>,
+    pub(crate) router: Arc<SensibleRouter>,
+    pub(crate) opts: Option<SensibleGraphEngineOpts>,
     pub(crate) cluster_id: Option<String>,
 }
 
-impl NexusGateway {
+impl SensibleGateway {
     pub fn new(
         address: &str,
-        graph_access: Arc<NexusGraphEngine>,
+        graph_access: Arc<SensibleGraphEngine>,
         workers_per_core: usize,
         routes: Option<HashMap<String, HandlerFn>>,
         mcp_routes: Option<HashMap<String, MCPHandlerFn>>,
         write_routes: Option<HashSet<String>>,
-        opts: Option<NexusGraphEngineOpts>,
-    ) -> NexusGateway {
-        let router = Arc::new(NexusRouter::new(routes, mcp_routes, write_routes));
+        opts: Option<SensibleGraphEngineOpts>,
+    ) -> SensibleGateway {
+        let router = Arc::new(SensibleRouter::new(routes, mcp_routes, write_routes));
         let cluster_id = std::env::var("SENSIBLE_CLUSTER_ID").ok();
-        NexusGateway {
+        SensibleGateway {
             address: address.to_string(),
             graph_access,
             router,

@@ -7,7 +7,7 @@ mod tests {
                 HBM25Config, HybridSearch, METADATA_KEY, PostingListEntry, ReversePostingEntry,
                 build_bm25_payload,
             },
-            storage_core::{NexusGraphStorage, version_info::VersionInfo},
+            storage_core::{SensibleGraphStorage, version_info::VersionInfo},
             traversal_core::config::Config,
             vector_core::{hnsw::HNSW, vector::HVector},
         },
@@ -44,11 +44,11 @@ mod tests {
         (config, temp_dir)
     }
 
-    fn setup_nexus_storage() -> (NexusGraphStorage, tempfile::TempDir) {
+    fn setup_nexus_storage() -> (SensibleGraphStorage, tempfile::TempDir) {
         let temp_dir = tempdir().unwrap();
         let path = temp_dir.path().to_str().unwrap();
         let config = Config::default();
-        let storage = NexusGraphStorage::new(path, config, VersionInfo::default()).unwrap();
+        let storage = SensibleGraphStorage::new(path, config, VersionInfo::default()).unwrap();
         (storage, temp_dir)
     }
 

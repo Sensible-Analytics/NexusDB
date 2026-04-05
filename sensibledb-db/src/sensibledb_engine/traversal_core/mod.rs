@@ -3,7 +3,7 @@ pub mod ops;
 pub mod traversal_iter;
 pub mod traversal_value;
 
-use crate::sensibledb_engine::storage_core::{NexusGraphStorage, version_info::VersionInfo};
+use crate::sensibledb_engine::storage_core::{SensibleGraphStorage, version_info::VersionInfo};
 use crate::sensibledb_engine::traversal_core::config::Config;
 use crate::sensibledb_engine::types::GraphError;
 use crate::sensibledb_gateway::mcp::mcp::{McpBackend, McpConnections};
@@ -19,24 +19,24 @@ pub enum QueryInput {
     BooleanValue { value: bool },
 }
 
-pub struct NexusGraphEngine {
-    pub storage: Arc<NexusGraphStorage>,
+pub struct SensibleGraphEngine {
+    pub storage: Arc<SensibleGraphStorage>,
     pub mcp_backend: Option<Arc<McpBackend>>,
     pub mcp_connections: Option<Arc<Mutex<McpConnections>>>,
 }
 
 #[derive(Default, Clone)]
-pub struct NexusGraphEngineOpts {
+pub struct SensibleGraphEngineOpts {
     pub path: String,
     pub config: Config,
     pub version_info: VersionInfo,
 }
 
-impl NexusGraphEngine {
-    pub fn new(opts: NexusGraphEngineOpts) -> Result<NexusGraphEngine, GraphError> {
+impl SensibleGraphEngine {
+    pub fn new(opts: SensibleGraphEngineOpts) -> Result<SensibleGraphEngine, GraphError> {
         let should_use_mcp = opts.config.mcp;
         let storage =
-            match NexusGraphStorage::new(opts.path.as_str(), opts.config, opts.version_info) {
+            match SensibleGraphStorage::new(opts.path.as_str(), opts.config, opts.version_info) {
                 Ok(db) => Arc::new(db),
                 Err(err) => return Err(err),
             };

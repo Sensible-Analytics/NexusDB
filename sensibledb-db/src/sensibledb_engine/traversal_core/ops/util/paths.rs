@@ -1,6 +1,6 @@
 use crate::{
     sensibledb_engine::{
-        storage_core::{NexusGraphStorage, storage_methods::StorageMethods},
+        storage_core::{SensibleGraphStorage, storage_methods::StorageMethods},
         traversal_core::{traversal_iter::RoTraversalIterator, traversal_value::TraversalValue},
         types::GraphError,
     },
@@ -105,7 +105,7 @@ pub struct ShortestPathIterator<
     pub iter: I,
     path_type: PathType,
     edge_label: Option<&'arena str>,
-    storage: &'db NexusGraphStorage,
+    storage: &'db SensibleGraphStorage,
     txn: &'txn RoTxn<'db>,
     algorithm: PathAlgorithm,
     weight_fn: F,
@@ -259,7 +259,7 @@ where
             let out_prefix = self.edge_label.map_or_else(
                 || current_id.to_be_bytes().to_vec(),
                 |label| {
-                    NexusGraphStorage::out_edge_key(&current_id, &hash_label(label, None)).to_vec()
+                    SensibleGraphStorage::out_edge_key(&current_id, &hash_label(label, None)).to_vec()
                 },
             );
 
@@ -274,7 +274,7 @@ where
                     Ok((_, value)) => value,
                     Err(e) => return Some(Err(GraphError::from(e))),
                 };
-                let (edge_id, to_node) = match NexusGraphStorage::unpack_adj_edge_data(value) {
+                let (edge_id, to_node) = match SensibleGraphStorage::unpack_adj_edge_data(value) {
                     Ok((edge_id, to_node)) => (edge_id, to_node),
                     Err(e) => return Some(Err(e)),
                 };
@@ -329,7 +329,7 @@ where
             let out_prefix = self.edge_label.map_or_else(
                 || current_id.to_be_bytes().to_vec(),
                 |label| {
-                    NexusGraphStorage::out_edge_key(&current_id, &hash_label(label, None)).to_vec()
+                    SensibleGraphStorage::out_edge_key(&current_id, &hash_label(label, None)).to_vec()
                 },
             );
 
@@ -341,7 +341,7 @@ where
 
             for result in iter {
                 let (_, value) = result.unwrap(); // TODO: handle error
-                let (edge_id, to_node) = NexusGraphStorage::unpack_adj_edge_data(value).unwrap(); // TODO: handle error
+                let (edge_id, to_node) = SensibleGraphStorage::unpack_adj_edge_data(value).unwrap(); // TODO: handle error
 
                 let edge = match self.storage.get_edge(self.txn, &edge_id, self.arena) {
                     Ok(e) => e,
@@ -447,7 +447,7 @@ where
             let out_prefix = self.edge_label.map_or_else(
                 || current_id.to_be_bytes().to_vec(),
                 |label| {
-                    NexusGraphStorage::out_edge_key(&current_id, &hash_label(label, None)).to_vec()
+                    SensibleGraphStorage::out_edge_key(&current_id, &hash_label(label, None)).to_vec()
                 },
             );
 
@@ -459,7 +459,7 @@ where
 
             for result in iter {
                 let (_, value) = result.unwrap(); // TODO: handle error
-                let (edge_id, to_node) = NexusGraphStorage::unpack_adj_edge_data(value).unwrap(); // TODO: handle error
+                let (edge_id, to_node) = SensibleGraphStorage::unpack_adj_edge_data(value).unwrap(); // TODO: handle error
 
                 let edge = match self.storage.get_edge(self.txn, &edge_id, self.arena) {
                     Ok(e) => e,

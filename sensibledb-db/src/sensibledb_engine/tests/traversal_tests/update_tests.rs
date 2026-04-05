@@ -6,7 +6,7 @@ use tempfile::TempDir;
 use super::test_utils::props_option;
 use crate::{
     sensibledb_engine::{
-        storage_core::NexusGraphStorage,
+        storage_core::SensibleGraphStorage,
         traversal_core::{
             ops::{
                 bm25::search_bm25::SearchBM25Adapter,
@@ -21,10 +21,10 @@ use crate::{
     protocol::value::Value,
 };
 
-fn setup_test_db() -> (TempDir, Arc<NexusGraphStorage>) {
+fn setup_test_db() -> (TempDir, Arc<SensibleGraphStorage>) {
     let temp_dir = TempDir::new().unwrap();
     let db_path = temp_dir.path().to_str().unwrap();
-    let storage = NexusGraphStorage::new(
+    let storage = SensibleGraphStorage::new(
         db_path,
         crate::sensibledb_engine::traversal_core::config::Config::default(),
         Default::default(),

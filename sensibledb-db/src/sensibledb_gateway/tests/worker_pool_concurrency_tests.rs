@@ -1,4 +1,4 @@
-use crate::sensibledb_engine::traversal_core::NexusGraphEngine;
+use crate::sensibledb_engine::traversal_core::SensibleGraphEngine;
 /// Concurrency-specific tests for WorkerPool
 ///
 /// This test suite focuses on concurrent behavior and race conditions in the WorkerPool.
@@ -17,13 +17,13 @@ use crate::sensibledb_engine::traversal_core::NexusGraphEngine;
 /// - Worker fairness under load
 /// - No coordination between workers accessing shared graph
 /// - No deadlocks or livelocks under high concurrency
-use crate::sensibledb_engine::traversal_core::NexusGraphEngineOpts;
+use crate::sensibledb_engine::traversal_core::SensibleGraphEngineOpts;
 use crate::sensibledb_engine::traversal_core::config::Config;
 use crate::sensibledb_engine::types::GraphError;
 use crate::sensibledb_gateway::worker_pool::WorkerPool;
 use crate::sensibledb_gateway::{
     gateway::CoreSetter,
-    router::router::{HandlerInput, NexusRouter},
+    router::router::{HandlerInput, SensibleRouter},
 };
 use crate::protocol::Format;
 use crate::protocol::{Request, request::RequestType, response::Response};
@@ -42,14 +42,14 @@ fn test_handler(_input: HandlerInput) -> Result<Response, GraphError> {
     })
 }
 
-fn create_test_graph() -> (Arc<NexusGraphEngine>, TempDir) {
+fn create_test_graph() -> (Arc<SensibleGraphEngine>, TempDir) {
     let temp_dir = TempDir::new().unwrap();
-    let opts = NexusGraphEngineOpts {
+    let opts = SensibleGraphEngineOpts {
         path: temp_dir.path().to_str().unwrap().to_string(),
         config: Config::default(),
         version_info: Default::default(),
     };
-    let graph = Arc::new(NexusGraphEngine::new(opts).unwrap());
+    let graph = Arc::new(SensibleGraphEngine::new(opts).unwrap());
     (graph, temp_dir)
 }
 
@@ -70,9 +70,9 @@ fn create_test_pool(
     routes: Option<
         HashMap<String, Arc<dyn Fn(HandlerInput) -> Result<Response, GraphError> + Send + Sync>>,
     >,
-) -> (WorkerPool, Arc<NexusGraphEngine>, TempDir) {
+) -> (WorkerPool, Arc<SensibleGraphEngine>, TempDir) {
     let (graph, temp_dir) = create_test_graph();
-    let router = Arc::new(NexusRouter::new(routes, None, None));
+    let router = Arc::new(SensibleRouter::new(routes, None, None));
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
             .worker_threads(num_cores)

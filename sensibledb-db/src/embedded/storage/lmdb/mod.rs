@@ -3,11 +3,11 @@ use crate::embedded::transaction::{Edge, Node};
 use crate::storage::StorageBackend;
 
 #[cfg(feature = "lmdb")]
-use sensibledb_db::sensibledb_engine::storage_core::NexusGraphStorage;
+use sensibledb_db::sensibledb_engine::storage_core::SensibleGraphStorage;
 
 pub struct LmdbStorage {
     #[cfg(feature = "lmdb")]
-    storage: NexusGraphStorage,
+    storage: SensibleGraphStorage,
 }
 
 #[cfg(feature = "lmdb")]
@@ -18,7 +18,7 @@ impl LmdbStorage {
     ) -> Result<Self> {
         let version_info =
             sensibledb_db::sensibledb_engine::storage_core::version_info::VersionInfo::default();
-        let storage = NexusGraphStorage::new(path, config, version_info)
+        let storage = SensibleGraphStorage::new(path, config, version_info)
             .map_err(|e| Error::Storage(e.to_string()))?;
         Ok(Self { storage })
     }

@@ -51,7 +51,7 @@ pub struct StorageConfig {
     pub embedding_model: Option<String>,
 }
 
-pub struct NexusGraphStorage {
+pub struct SensibleGraphStorage {
     pub graph_env: Env,
 
     pub nodes_db: Database<U128<BE>, Bytes>,
@@ -67,12 +67,12 @@ pub struct NexusGraphStorage {
     pub storage_config: StorageConfig,
 }
 
-impl NexusGraphStorage {
+impl SensibleGraphStorage {
     pub fn new(
         path: &str,
         config: Config,
         version_info: VersionInfo,
-    ) -> Result<NexusGraphStorage, GraphError> {
+    ) -> Result<SensibleGraphStorage, GraphError> {
         fs::create_dir_all(path)?;
 
         let db_size = if config.db_max_size_gb.unwrap_or(100) >= 9999 {
@@ -308,7 +308,7 @@ impl StorageConfig {
     }
 }
 
-impl DBMethods for NexusGraphStorage {
+impl DBMethods for SensibleGraphStorage {
     /// Creates a secondary index lmdb db (table) for a given index name
     fn create_secondary_index(&mut self, index: SecondaryIndex) -> Result<(), GraphError> {
         let mut wtxn = self.graph_env.write_txn()?;
@@ -344,7 +344,7 @@ impl DBMethods for NexusGraphStorage {
     }
 }
 
-impl StorageMethods for NexusGraphStorage {
+impl StorageMethods for SensibleGraphStorage {
     #[inline]
     fn get_node<'arena>(
         &self,

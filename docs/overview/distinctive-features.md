@@ -40,7 +40,7 @@ Benefits:
 
 ## Secure by Default
 
-**Query-Based Access Control**: SensibleDB is private by default - you can only access your data through compiled NexusQL queries.
+**Query-Based Access Control**: SensibleDB is private by default - you can only access your data through compiled SensibleQL queries.
 
 Security Model:
 - No direct table or collection access
@@ -74,7 +74,7 @@ Benefits:
 
 ## Type-Safe Queries
 
-**Compile-Time Query Validation**: NexusQL is 100% type-safe, which lets you develop and deploy with confidence that your queries will execute in production.
+**Compile-Time Query Validation**: SensibleQL is 100% type-safe, which lets you develop and deploy with confidence that your queries will execute in production.
 
 Type Safety Features:
 - Schema validation at compile time

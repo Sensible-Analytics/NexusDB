@@ -1,7 +1,7 @@
 # Analyzer Module
 
 ## Overview
-The analyzer module performs static analysis and type checking on the NexusQL AST, ensuring queries are grammatically and semantically correct before code generation.
+The analyzer module performs static analysis and type checking on the SensibleQL AST, ensuring queries are grammatically and semantically correct before code generation.
 
 ## Structure
 

@@ -1,6 +1,6 @@
 use crate::{
     sensibledb_engine::{
-        storage_core::NexusGraphStorage,
+        storage_core::SensibleGraphStorage,
         traversal_core::{
             ops::util::{aggregate::AggregateAdapter, group_by::GroupByAdapter},
             traversal_value::TraversalValue,
@@ -63,11 +63,11 @@ impl Default for McpConnections {
 }
 
 pub struct McpBackend {
-    pub db: Arc<NexusGraphStorage>,
+    pub db: Arc<SensibleGraphStorage>,
 }
 
 impl McpBackend {
-    pub fn new(db: Arc<NexusGraphStorage>) -> Self {
+    pub fn new(db: Arc<SensibleGraphStorage>) -> Self {
         Self { db }
     }
 }
@@ -116,7 +116,7 @@ impl MCPConnection {
 
     pub fn next_item<'db, 'arena>(
         &mut self,
-        db: &'db NexusGraphStorage,
+        db: &'db SensibleGraphStorage,
         arena: &'arena Bump,
     ) -> Result<TraversalValue<'arena>, GraphError>
     where

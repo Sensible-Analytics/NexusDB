@@ -1,10 +1,10 @@
-use crate::sensibledb_engine::traversal_core::NexusGraphEngineOpts;
+use crate::sensibledb_engine::traversal_core::SensibleGraphEngineOpts;
 use crate::sensibledb_engine::traversal_core::config::Config;
-use crate::sensibledb_engine::{traversal_core::NexusGraphEngine, types::GraphError};
+use crate::sensibledb_engine::{traversal_core::SensibleGraphEngine, types::GraphError};
 use crate::sensibledb_gateway::worker_pool::WorkerPool;
 use crate::sensibledb_gateway::{
     gateway::CoreSetter,
-    router::router::{HandlerInput, NexusRouter, IoContFn},
+    router::router::{HandlerInput, SensibleRouter, IoContFn},
 };
 use crate::protocol::Format;
 use crate::protocol::{NexusError, Request, request::RequestType, response::Response};
@@ -12,18 +12,18 @@ use axum::body::Bytes;
 use std::sync::Arc;
 use tempfile::TempDir;
 
-fn create_test_graph() -> (Arc<NexusGraphEngine>, TempDir) {
+fn create_test_graph() -> (Arc<SensibleGraphEngine>, TempDir) {
     let temp_dir = TempDir::new().unwrap();
     let mut config = Config::default();
     // Use very minimal DB size for tests (0 means use minimum)
     // This reduces memory mapping requirements when running many tests in parallel
     config.db_max_size_gb = Some(0);
-    let opts = NexusGraphEngineOpts {
+    let opts = SensibleGraphEngineOpts {
         path: temp_dir.path().to_str().unwrap().to_string(),
         config,
         version_info: Default::default(),
     };
-    let graph = Arc::new(NexusGraphEngine::new(opts).unwrap());
+    let graph = Arc::new(SensibleGraphEngine::new(opts).unwrap());
     (graph, temp_dir)
 }
 
@@ -56,7 +56,7 @@ fn create_test_request(name: &str, req_type: RequestType) -> Request {
 #[test]
 fn test_worker_pool_new() {
     let (graph, _temp_dir) = create_test_graph();
-    let router = Arc::new(NexusRouter::new(None, None, None));
+    let router = Arc::new(SensibleRouter::new(None, None, None));
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
             .worker_threads(1)
@@ -77,7 +77,7 @@ fn test_worker_pool_new() {
 #[test]
 fn test_worker_pool_with_single_core() {
     let (graph, _temp_dir) = create_test_graph();
-    let router = Arc::new(NexusRouter::new(None, None, None));
+    let router = Arc::new(SensibleRouter::new(None, None, None));
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
             .worker_threads(1)
@@ -96,7 +96,7 @@ fn test_worker_pool_with_single_core() {
 #[test]
 fn test_worker_pool_with_multiple_cores() {
     let (graph, _temp_dir) = create_test_graph();
-    let router = Arc::new(NexusRouter::new(None, None, None));
+    let router = Arc::new(SensibleRouter::new(None, None, None));
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
             .worker_threads(2)
@@ -117,7 +117,7 @@ fn test_worker_pool_with_multiple_cores() {
 #[test]
 fn test_worker_pool_with_multiple_workers_per_core() {
     let (graph, _temp_dir) = create_test_graph();
-    let router = Arc::new(NexusRouter::new(None, None, None));
+    let router = Arc::new(SensibleRouter::new(None, None, None));
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
             .worker_threads(4)
@@ -135,7 +135,7 @@ fn test_worker_pool_with_multiple_workers_per_core() {
 #[test]
 fn test_worker_pool_channel_capacity() {
     let (graph, _temp_dir) = create_test_graph();
-    let router = Arc::new(NexusRouter::new(None, None, None));
+    let router = Arc::new(SensibleRouter::new(None, None, None));
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
             .worker_threads(1)
@@ -162,7 +162,7 @@ async fn test_process_request_success() {
     let (graph, _temp_dir) = create_test_graph();
     let mut routes = std::collections::HashMap::new();
     routes.insert("test_query".to_string(), Arc::new(test_handler) as Arc<_>);
-    let router = Arc::new(NexusRouter::new(Some(routes), None, None));
+    let router = Arc::new(SensibleRouter::new(Some(routes), None, None));
 
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
@@ -191,7 +191,7 @@ async fn test_process_request_handler_error() {
     let (graph, _temp_dir) = create_test_graph();
     let mut routes = std::collections::HashMap::new();
     routes.insert("error_query".to_string(), Arc::new(error_handler) as Arc<_>);
-    let router = Arc::new(NexusRouter::new(Some(routes), None, None));
+    let router = Arc::new(SensibleRouter::new(Some(routes), None, None));
 
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
@@ -216,7 +216,7 @@ async fn test_process_request_handler_error() {
 #[tokio::test]
 async fn test_process_request_not_found() {
     let (graph, _temp_dir) = create_test_graph();
-    let router = Arc::new(NexusRouter::new(None, None, None));
+    let router = Arc::new(SensibleRouter::new(None, None, None));
 
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
@@ -250,7 +250,7 @@ async fn test_process_multiple_requests_sequentially() {
     let (graph, _temp_dir) = create_test_graph();
     let mut routes = std::collections::HashMap::new();
     routes.insert("test_query".to_string(), Arc::new(test_handler) as Arc<_>);
-    let router = Arc::new(NexusRouter::new(Some(routes), None, None));
+    let router = Arc::new(SensibleRouter::new(Some(routes), None, None));
 
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
@@ -278,7 +278,7 @@ async fn test_process_requests_parallel() {
     let (graph, _temp_dir) = create_test_graph();
     let mut routes = std::collections::HashMap::new();
     routes.insert("test_query".to_string(), Arc::new(test_handler) as Arc<_>);
-    let router = Arc::new(NexusRouter::new(Some(routes), None, None));
+    let router = Arc::new(SensibleRouter::new(Some(routes), None, None));
 
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
@@ -321,7 +321,7 @@ async fn test_route_query_request() {
     let (graph, _temp_dir) = create_test_graph();
     let mut routes = std::collections::HashMap::new();
     routes.insert("query1".to_string(), Arc::new(test_handler) as Arc<_>);
-    let router = Arc::new(NexusRouter::new(Some(routes), None, None));
+    let router = Arc::new(SensibleRouter::new(Some(routes), None, None));
 
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
@@ -346,7 +346,7 @@ async fn test_route_query_request() {
 #[tokio::test]
 async fn test_route_query_not_found() {
     let (graph, _temp_dir) = create_test_graph();
-    let router = Arc::new(NexusRouter::new(None, None, None));
+    let router = Arc::new(SensibleRouter::new(None, None, None));
 
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
@@ -376,7 +376,7 @@ async fn test_multiple_query_routes() {
     routes.insert("query1".to_string(), Arc::new(test_handler) as Arc<_>);
     routes.insert("query2".to_string(), Arc::new(test_handler) as Arc<_>);
     routes.insert("query3".to_string(), Arc::new(test_handler) as Arc<_>);
-    let router = Arc::new(NexusRouter::new(Some(routes), None, None));
+    let router = Arc::new(SensibleRouter::new(Some(routes), None, None));
 
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
@@ -411,7 +411,7 @@ async fn test_route_with_special_characters() {
         "query_with_underscore".to_string(),
         Arc::new(test_handler) as Arc<_>,
     );
-    let router = Arc::new(NexusRouter::new(Some(routes), None, None));
+    let router = Arc::new(SensibleRouter::new(Some(routes), None, None));
 
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
@@ -443,7 +443,7 @@ async fn test_handler_error_propagation() {
     let (graph, _temp_dir) = create_test_graph();
     let mut routes = std::collections::HashMap::new();
     routes.insert("error".to_string(), Arc::new(error_handler) as Arc<_>);
-    let router = Arc::new(NexusRouter::new(Some(routes), None, None));
+    let router = Arc::new(SensibleRouter::new(Some(routes), None, None));
 
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
@@ -468,7 +468,7 @@ async fn test_handler_error_propagation() {
 #[tokio::test]
 async fn test_not_found_error_contains_request_name() {
     let (graph, _temp_dir) = create_test_graph();
-    let router = Arc::new(NexusRouter::new(None, None, None));
+    let router = Arc::new(SensibleRouter::new(None, None, None));
 
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
@@ -498,7 +498,7 @@ async fn test_not_found_error_contains_request_name() {
 #[tokio::test]
 async fn test_not_found_error_contains_request_type() {
     let (graph, _temp_dir) = create_test_graph();
-    let router = Arc::new(NexusRouter::new(None, None, None));
+    let router = Arc::new(SensibleRouter::new(None, None, None));
 
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
@@ -531,7 +531,7 @@ async fn test_mixed_success_and_error_requests() {
     let mut routes = std::collections::HashMap::new();
     routes.insert("success".to_string(), Arc::new(test_handler) as Arc<_>);
     routes.insert("error".to_string(), Arc::new(error_handler) as Arc<_>);
-    let router = Arc::new(NexusRouter::new(Some(routes), None, None));
+    let router = Arc::new(SensibleRouter::new(Some(routes), None, None));
 
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
@@ -566,7 +566,7 @@ async fn test_request_with_body_data() {
     let (graph, _temp_dir) = create_test_graph();
     let mut routes = std::collections::HashMap::new();
     routes.insert("test".to_string(), Arc::new(test_handler) as Arc<_>);
-    let router = Arc::new(NexusRouter::new(Some(routes), None, None));
+    let router = Arc::new(SensibleRouter::new(Some(routes), None, None));
 
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
@@ -600,7 +600,7 @@ async fn test_request_with_empty_body() {
     let (graph, _temp_dir) = create_test_graph();
     let mut routes = std::collections::HashMap::new();
     routes.insert("test".to_string(), Arc::new(test_handler) as Arc<_>);
-    let router = Arc::new(NexusRouter::new(Some(routes), None, None));
+    let router = Arc::new(SensibleRouter::new(Some(routes), None, None));
 
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
@@ -626,7 +626,7 @@ async fn test_request_format_json() {
     let (graph, _temp_dir) = create_test_graph();
     let mut routes = std::collections::HashMap::new();
     routes.insert("test".to_string(), Arc::new(test_handler) as Arc<_>);
-    let router = Arc::new(NexusRouter::new(Some(routes), None, None));
+    let router = Arc::new(SensibleRouter::new(Some(routes), None, None));
 
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
@@ -663,7 +663,7 @@ async fn test_request_format_json() {
 #[test]
 fn test_worker_thread_creation() {
     let (graph, _temp_dir) = create_test_graph();
-    let router = Arc::new(NexusRouter::new(None, None, None));
+    let router = Arc::new(SensibleRouter::new(None, None, None));
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
             .worker_threads(1)
@@ -686,7 +686,7 @@ fn test_worker_thread_creation() {
 #[test]
 fn test_multiple_worker_threads() {
     let (graph, _temp_dir) = create_test_graph();
-    let router = Arc::new(NexusRouter::new(None, None, None));
+    let router = Arc::new(SensibleRouter::new(None, None, None));
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
             .worker_threads(4)
@@ -716,7 +716,7 @@ async fn test_channel_communication() {
     let (graph, _temp_dir) = create_test_graph();
     let mut routes = std::collections::HashMap::new();
     routes.insert("test".to_string(), Arc::new(test_handler) as Arc<_>);
-    let router = Arc::new(NexusRouter::new(Some(routes), None, None));
+    let router = Arc::new(SensibleRouter::new(Some(routes), None, None));
 
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
@@ -743,7 +743,7 @@ async fn test_high_volume_requests() {
     let (graph, _temp_dir) = create_test_graph();
     let mut routes = std::collections::HashMap::new();
     routes.insert("test".to_string(), Arc::new(test_handler) as Arc<_>);
-    let router = Arc::new(NexusRouter::new(Some(routes), None, None));
+    let router = Arc::new(SensibleRouter::new(Some(routes), None, None));
 
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
@@ -803,7 +803,7 @@ async fn test_handler_receives_correct_request() {
         "check_name".to_string(),
         Arc::new(check_request_handler) as Arc<_>,
     );
-    let router = Arc::new(NexusRouter::new(Some(routes), None, None));
+    let router = Arc::new(SensibleRouter::new(Some(routes), None, None));
 
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
@@ -841,7 +841,7 @@ async fn test_handler_receives_graph_access() {
     let (graph, _temp_dir) = create_test_graph();
     let mut routes = std::collections::HashMap::new();
     routes.insert("test".to_string(), Arc::new(graph_access_handler) as Arc<_>);
-    let router = Arc::new(NexusRouter::new(Some(routes), None, None));
+    let router = Arc::new(SensibleRouter::new(Some(routes), None, None));
 
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
@@ -872,7 +872,7 @@ async fn test_response_body_content() {
     let (graph, _temp_dir) = create_test_graph();
     let mut routes = std::collections::HashMap::new();
     routes.insert("test".to_string(), Arc::new(test_handler) as Arc<_>);
-    let router = Arc::new(NexusRouter::new(Some(routes), None, None));
+    let router = Arc::new(SensibleRouter::new(Some(routes), None, None));
 
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
@@ -902,7 +902,7 @@ async fn test_response_format_preserved() {
     let (graph, _temp_dir) = create_test_graph();
     let mut routes = std::collections::HashMap::new();
     routes.insert("test".to_string(), Arc::new(test_handler) as Arc<_>);
-    let router = Arc::new(NexusRouter::new(Some(routes), None, None));
+    let router = Arc::new(SensibleRouter::new(Some(routes), None, None));
 
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
@@ -934,7 +934,7 @@ async fn test_empty_route_name() {
     let (graph, _temp_dir) = create_test_graph();
     let mut routes = std::collections::HashMap::new();
     routes.insert("".to_string(), Arc::new(test_handler) as Arc<_>);
-    let router = Arc::new(NexusRouter::new(Some(routes), None, None));
+    let router = Arc::new(SensibleRouter::new(Some(routes), None, None));
 
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
@@ -962,7 +962,7 @@ async fn test_very_long_route_name() {
     let long_name = "a".repeat(1000);
     let mut routes = std::collections::HashMap::new();
     routes.insert(long_name.clone(), Arc::new(test_handler) as Arc<_>);
-    let router = Arc::new(NexusRouter::new(Some(routes), None, None));
+    let router = Arc::new(SensibleRouter::new(Some(routes), None, None));
 
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
@@ -991,7 +991,7 @@ async fn test_concurrent_different_routes() {
     routes.insert("route_a".to_string(), Arc::new(test_handler) as Arc<_>);
     routes.insert("route_b".to_string(), Arc::new(test_handler) as Arc<_>);
     routes.insert("route_c".to_string(), Arc::new(test_handler) as Arc<_>);
-    let router = Arc::new(NexusRouter::new(Some(routes), None, None));
+    let router = Arc::new(SensibleRouter::new(Some(routes), None, None));
 
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
@@ -1032,7 +1032,7 @@ async fn test_sequential_different_routes() {
     routes.insert("first".to_string(), Arc::new(test_handler) as Arc<_>);
     routes.insert("second".to_string(), Arc::new(test_handler) as Arc<_>);
     routes.insert("third".to_string(), Arc::new(test_handler) as Arc<_>);
-    let router = Arc::new(NexusRouter::new(Some(routes), None, None));
+    let router = Arc::new(SensibleRouter::new(Some(routes), None, None));
 
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
@@ -1059,7 +1059,7 @@ async fn test_repeated_requests_same_route() {
     let (graph, _temp_dir) = create_test_graph();
     let mut routes = std::collections::HashMap::new();
     routes.insert("repeat".to_string(), Arc::new(test_handler) as Arc<_>);
-    let router = Arc::new(NexusRouter::new(Some(routes), None, None));
+    let router = Arc::new(SensibleRouter::new(Some(routes), None, None));
 
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
@@ -1087,7 +1087,7 @@ async fn test_alternating_success_error() {
     let mut routes = std::collections::HashMap::new();
     routes.insert("success".to_string(), Arc::new(test_handler) as Arc<_>);
     routes.insert("error".to_string(), Arc::new(error_handler) as Arc<_>);
-    let router = Arc::new(NexusRouter::new(Some(routes), None, None));
+    let router = Arc::new(SensibleRouter::new(Some(routes), None, None));
 
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
@@ -1120,7 +1120,7 @@ async fn test_request_with_large_body() {
     let (graph, _temp_dir) = create_test_graph();
     let mut routes = std::collections::HashMap::new();
     routes.insert("test".to_string(), Arc::new(test_handler) as Arc<_>);
-    let router = Arc::new(NexusRouter::new(Some(routes), None, None));
+    let router = Arc::new(SensibleRouter::new(Some(routes), None, None));
 
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
@@ -1155,7 +1155,7 @@ async fn test_many_parallel_requests() {
     let (graph, _temp_dir) = create_test_graph();
     let mut routes = std::collections::HashMap::new();
     routes.insert("test".to_string(), Arc::new(test_handler) as Arc<_>);
-    let router = Arc::new(NexusRouter::new(Some(routes), None, None));
+    let router = Arc::new(SensibleRouter::new(Some(routes), None, None));
 
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
@@ -1196,7 +1196,7 @@ async fn test_many_parallel_requests() {
 #[tokio::test]
 async fn test_worker_pool_no_routes() {
     let (graph, _temp_dir) = create_test_graph();
-    let router = Arc::new(NexusRouter::new(None, None, None));
+    let router = Arc::new(SensibleRouter::new(None, None, None));
 
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
@@ -1224,7 +1224,7 @@ async fn test_request_type_query_explicit() {
     let (graph, _temp_dir) = create_test_graph();
     let mut routes = std::collections::HashMap::new();
     routes.insert("query".to_string(), Arc::new(test_handler) as Arc<_>);
-    let router = Arc::new(NexusRouter::new(Some(routes), None, None));
+    let router = Arc::new(SensibleRouter::new(Some(routes), None, None));
 
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
@@ -1257,7 +1257,7 @@ async fn test_request_type_query_explicit() {
 #[should_panic(expected = "The number of workers must be at least 2")]
 fn test_worker_pool_with_empty_cores() {
     let (graph, _temp_dir) = create_test_graph();
-    let router = Arc::new(NexusRouter::new(None, None, None));
+    let router = Arc::new(SensibleRouter::new(None, None, None));
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
             .worker_threads(1)
@@ -1277,7 +1277,7 @@ fn test_worker_pool_with_empty_cores() {
 #[should_panic(expected = "The number of workers should be a multiple of 2")]
 fn test_worker_pool_with_odd_workers() {
     let (graph, _temp_dir) = create_test_graph();
-    let router = Arc::new(NexusRouter::new(None, None, None));
+    let router = Arc::new(SensibleRouter::new(None, None, None));
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
             .worker_threads(1)
@@ -1297,7 +1297,7 @@ fn test_worker_pool_with_odd_workers() {
 #[should_panic(expected = "The number of workers must be at least 2")]
 fn test_worker_pool_with_single_worker() {
     let (graph, _temp_dir) = create_test_graph();
-    let router = Arc::new(NexusRouter::new(None, None, None));
+    let router = Arc::new(SensibleRouter::new(None, None, None));
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
             .worker_threads(1)
@@ -1325,7 +1325,7 @@ async fn test_response_with_custom_body() {
     let (graph, _temp_dir) = create_test_graph();
     let mut routes = std::collections::HashMap::new();
     routes.insert("custom".to_string(), Arc::new(custom_handler) as Arc<_>);
-    let router = Arc::new(NexusRouter::new(Some(routes), None, None));
+    let router = Arc::new(SensibleRouter::new(Some(routes), None, None));
 
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
@@ -1355,7 +1355,7 @@ async fn test_error_then_success() {
     let mut routes = std::collections::HashMap::new();
     routes.insert("success".to_string(), Arc::new(test_handler) as Arc<_>);
     routes.insert("error".to_string(), Arc::new(error_handler) as Arc<_>);
-    let router = Arc::new(NexusRouter::new(Some(routes), None, None));
+    let router = Arc::new(SensibleRouter::new(Some(routes), None, None));
 
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
@@ -1385,7 +1385,7 @@ async fn test_success_then_not_found() {
     let (graph, _temp_dir) = create_test_graph();
     let mut routes = std::collections::HashMap::new();
     routes.insert("exists".to_string(), Arc::new(test_handler) as Arc<_>);
-    let router = Arc::new(NexusRouter::new(Some(routes), None, None));
+    let router = Arc::new(SensibleRouter::new(Some(routes), None, None));
 
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
@@ -1415,7 +1415,7 @@ async fn test_multiple_errors_in_sequence() {
     let (graph, _temp_dir) = create_test_graph();
     let mut routes = std::collections::HashMap::new();
     routes.insert("error".to_string(), Arc::new(error_handler) as Arc<_>);
-    let router = Arc::new(NexusRouter::new(Some(routes), None, None));
+    let router = Arc::new(SensibleRouter::new(Some(routes), None, None));
 
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
@@ -1442,7 +1442,7 @@ async fn test_worker_pool_stress_test() {
     let (graph, _temp_dir) = create_test_graph();
     let mut routes = std::collections::HashMap::new();
     routes.insert("stress".to_string(), Arc::new(test_handler) as Arc<_>);
-    let router = Arc::new(NexusRouter::new(Some(routes), None, None));
+    let router = Arc::new(SensibleRouter::new(Some(routes), None, None));
 
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
@@ -1484,7 +1484,7 @@ async fn test_route_case_sensitive() {
     let (graph, _temp_dir) = create_test_graph();
     let mut routes = std::collections::HashMap::new();
     routes.insert("Query".to_string(), Arc::new(test_handler) as Arc<_>);
-    let router = Arc::new(NexusRouter::new(Some(routes), None, None));
+    let router = Arc::new(SensibleRouter::new(Some(routes), None, None));
 
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
@@ -1515,7 +1515,7 @@ async fn test_route_with_numbers() {
     let mut routes = std::collections::HashMap::new();
     routes.insert("query123".to_string(), Arc::new(test_handler) as Arc<_>);
     routes.insert("123query".to_string(), Arc::new(test_handler) as Arc<_>);
-    let router = Arc::new(NexusRouter::new(Some(routes), None, None));
+    let router = Arc::new(SensibleRouter::new(Some(routes), None, None));
 
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
@@ -1543,7 +1543,7 @@ async fn test_worker_pool_multiple_workers_same_route() {
     let (graph, _temp_dir) = create_test_graph();
     let mut routes = std::collections::HashMap::new();
     routes.insert("shared".to_string(), Arc::new(test_handler) as Arc<_>);
-    let router = Arc::new(NexusRouter::new(Some(routes), None, None));
+    let router = Arc::new(SensibleRouter::new(Some(routes), None, None));
 
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
@@ -1582,7 +1582,7 @@ async fn test_request_name_with_unicode() {
     let (graph, _temp_dir) = create_test_graph();
     let mut routes = std::collections::HashMap::new();
     routes.insert("query_世界".to_string(), Arc::new(test_handler) as Arc<_>);
-    let router = Arc::new(NexusRouter::new(Some(routes), None, None));
+    let router = Arc::new(SensibleRouter::new(Some(routes), None, None));
 
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
@@ -1609,7 +1609,7 @@ async fn test_rapid_fire_requests() {
     let (graph, _temp_dir) = create_test_graph();
     let mut routes = std::collections::HashMap::new();
     routes.insert("rapid".to_string(), Arc::new(test_handler) as Arc<_>);
-    let router = Arc::new(NexusRouter::new(Some(routes), None, None));
+    let router = Arc::new(SensibleRouter::new(Some(routes), None, None));
 
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
@@ -1724,7 +1724,7 @@ async fn test_writer_continuation_priority() {
     write_routes.insert("io_write_a".to_string());
     write_routes.insert("write_b".to_string());
 
-    let router = Arc::new(NexusRouter::new(Some(routes), None, Some(write_routes)));
+    let router = Arc::new(SensibleRouter::new(Some(routes), None, Some(write_routes)));
 
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
@@ -1835,7 +1835,7 @@ async fn test_read_continuation_channel_basic() {
     let mut routes = std::collections::HashMap::new();
     routes.insert("io_read".to_string(), Arc::new(io_read_handler) as Arc<_>);
     // Not in write_routes, so it goes to reader workers
-    let router = Arc::new(NexusRouter::new(Some(routes), None, None));
+    let router = Arc::new(SensibleRouter::new(Some(routes), None, None));
 
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
@@ -1909,7 +1909,7 @@ async fn test_read_continuation_channel_concurrent() {
         "io_read_concurrent".to_string(),
         Arc::new(io_read_handler) as Arc<_>,
     );
-    let router = Arc::new(NexusRouter::new(Some(routes), None, None));
+    let router = Arc::new(SensibleRouter::new(Some(routes), None, None));
 
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
@@ -1997,7 +1997,7 @@ async fn test_parallel_write_requests_no_crash() {
     let mut write_routes = std::collections::HashSet::new();
     write_routes.insert("write_op".to_string());
 
-    let router = Arc::new(NexusRouter::new(Some(routes), None, Some(write_routes)));
+    let router = Arc::new(SensibleRouter::new(Some(routes), None, Some(write_routes)));
 
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
@@ -2098,7 +2098,7 @@ async fn test_parallel_write_requests_with_continuations() {
     let mut write_routes = std::collections::HashSet::new();
     write_routes.insert("io_write".to_string());
 
-    let router = Arc::new(NexusRouter::new(Some(routes), None, Some(write_routes)));
+    let router = Arc::new(SensibleRouter::new(Some(routes), None, Some(write_routes)));
 
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
@@ -2200,7 +2200,7 @@ async fn test_parallel_writes_maintain_order() {
     let mut write_routes = std::collections::HashSet::new();
     write_routes.insert("order_write".to_string());
 
-    let router = Arc::new(NexusRouter::new(Some(routes), None, Some(write_routes)));
+    let router = Arc::new(SensibleRouter::new(Some(routes), None, Some(write_routes)));
 
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
@@ -2304,7 +2304,7 @@ async fn test_write_multiple_continuations_in_sequence() {
     let mut write_routes = std::collections::HashSet::new();
     write_routes.insert("multi_cont".to_string());
 
-    let router = Arc::new(NexusRouter::new(Some(routes), None, Some(write_routes)));
+    let router = Arc::new(SensibleRouter::new(Some(routes), None, Some(write_routes)));
 
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
@@ -2414,7 +2414,7 @@ async fn test_mixed_read_write_with_continuations() {
     let mut write_routes = std::collections::HashSet::new();
     write_routes.insert("io_write_mixed".to_string());
 
-    let router = Arc::new(NexusRouter::new(Some(routes), None, Some(write_routes)));
+    let router = Arc::new(SensibleRouter::new(Some(routes), None, Some(write_routes)));
 
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
@@ -2535,7 +2535,7 @@ async fn test_stress_parallel_writes_with_continuations() {
     let mut write_routes = std::collections::HashSet::new();
     write_routes.insert("stress_write".to_string());
 
-    let router = Arc::new(NexusRouter::new(Some(routes), None, Some(write_routes)));
+    let router = Arc::new(SensibleRouter::new(Some(routes), None, Some(write_routes)));
 
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()

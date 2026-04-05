@@ -1,6 +1,6 @@
 use crate::{
     sensibledb_engine::{
-        storage_core::NexusGraphStorage,
+        storage_core::SensibleGraphStorage,
         traversal_core::{
             ops::{
                 g::G,
@@ -151,7 +151,7 @@ where
     'arena: 'txn,
 {
     pub fn new(
-        storage: &'db NexusGraphStorage,
+        storage: &'db SensibleGraphStorage,
         txn: &'txn RoTxn<'db>,
         arena: &'arena Bump,
     ) -> Self {
@@ -159,7 +159,7 @@ where
     }
 
     pub fn from_iter(
-        storage: &'db NexusGraphStorage,
+        storage: &'db SensibleGraphStorage,
         txn: &'txn RoTxn<'db>,
         arena: &'arena Bump,
         items: impl Iterator<Item = TraversalValue<'arena>> + 'txn,
@@ -235,7 +235,7 @@ where
 
 pub fn execute_query_chain<'db, 'arena, 'txn>(
     steps: &[ToolArgs],
-    storage: &'db NexusGraphStorage,
+    storage: &'db SensibleGraphStorage,
     txn: &'txn RoTxn<'db>,
     arena: &'arena Bump,
 ) -> Result<TraversalStream<'db, 'arena, 'txn>, GraphError>
@@ -249,7 +249,7 @@ where
 
 pub fn execute_query_chain_from_seed<'db, 'arena, 'txn>(
     steps: &[ToolArgs],
-    storage: &'db NexusGraphStorage,
+    storage: &'db SensibleGraphStorage,
     txn: &'txn RoTxn<'db>,
     arena: &'arena Bump,
     seed: impl Iterator<Item = TraversalValue<'arena>> + 'txn,
@@ -265,7 +265,7 @@ where
 pub fn execute_query_chain_with_stream<'db, 'arena, 'txn>(
     initial: TraversalStream<'db, 'arena, 'txn>,
     steps: &[ToolArgs],
-    storage: &'db NexusGraphStorage,
+    storage: &'db SensibleGraphStorage,
     txn: &'txn RoTxn<'db>,
     arena: &'arena Bump,
 ) -> Result<TraversalStream<'db, 'arena, 'txn>, GraphError>
@@ -281,7 +281,7 @@ where
 fn apply_step<'db, 'arena, 'txn>(
     stream: TraversalStream<'db, 'arena, 'txn>,
     step: &ToolArgs,
-    storage: &'db NexusGraphStorage,
+    storage: &'db SensibleGraphStorage,
     txn: &'txn RoTxn<'db>,
     arena: &'arena Bump,
 ) -> Result<TraversalStream<'db, 'arena, 'txn>, GraphError>
@@ -477,7 +477,7 @@ where
 fn matches_filter<'db, 'arena, 'txn>(
     item: &TraversalValue<'arena>,
     filter: &FilterTraversal,
-    storage: &'db NexusGraphStorage,
+    storage: &'db SensibleGraphStorage,
     txn: &'txn RoTxn<'db>,
     arena: &'arena Bump,
 ) -> Result<bool, GraphError>
@@ -521,7 +521,7 @@ fn matches_properties(
 fn evaluate_sub_traversal<'db, 'arena, 'txn>(
     item: &TraversalValue<'arena>,
     step: &ToolArgs,
-    storage: &'db NexusGraphStorage,
+    storage: &'db SensibleGraphStorage,
     txn: &'txn RoTxn<'db>,
     arena: &'arena Bump,
 ) -> Result<bool, GraphError>

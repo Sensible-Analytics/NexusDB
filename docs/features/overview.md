@@ -14,7 +14,7 @@ Vector search, BM25 keyword search, graph traversals, hybrid search with RRF.
 
 ## Security
 
-Private by default. Data accessible only through compiled NexusQL queries.
+Private by default. Data accessible only through compiled SensibleQL queries.
 
 ## Ultra-Low Latency
 

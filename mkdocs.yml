@@ -46,12 +46,12 @@ nav:
   - Getting Started:
     - Overview: getting-started/intro.md
     - Installation: getting-started/installation.md
-  - NexusQL:
-    - Overview: nexusql/overview.md
-    - Schema Definition: nexusql/schema-definition.md
-    - CRUD Operations: nexusql/crud-operations.md
-    - Graph Traversals: nexusql/traversals.md
-    - Vector Operations: nexusql/vector-operations.md
+  - SensibleQL:
+    - Overview: sensibleql/overview.md
+    - Schema Definition: sensibleql/schema-definition.md
+    - CRUD Operations: sensibleql/crud-operations.md
+    - Graph Traversals: sensibleql/traversals.md
+    - Vector Operations: sensibleql/vector-operations.md
   - CLI:
     - Getting Started: cli/getting-started.md
   - SDKs:

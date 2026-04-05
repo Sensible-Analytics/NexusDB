@@ -1,7 +1,7 @@
 use crate::{
     sensibledb_engine::{
         bm25::bm25::HBM25Config,
-        storage_core::NexusGraphStorage,
+        storage_core::SensibleGraphStorage,
         traversal_core::{traversal_iter::RwTraversalIterator, traversal_value::TraversalValue},
         types::GraphError,
     },
@@ -24,7 +24,7 @@ where
     'db: 'arena,
     'arena: 'txn,
 {
-    pub storage: &'db NexusGraphStorage,
+    pub storage: &'db SensibleGraphStorage,
     pub arena: &'arena bumpalo::Bump,
     pub txn: &'txn RwTxn<'db>,
     inner: std::iter::Once<Result<TraversalValue<'arena>, GraphError>>,

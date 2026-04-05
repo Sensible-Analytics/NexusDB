@@ -1,10 +1,10 @@
-# What is NexusQL?
+# What is SensibleQL?
 
-NexusQL is a **strongly typed, compiled query language** for SensibleDB.
+SensibleQL is a **strongly typed, compiled query language** for SensibleDB.
 
-## Why NexusQL?
+## Why SensibleQL?
 
-| Feature | NexusQL | Gremlin | Cypher |
+| Feature | SensibleQL | Gremlin | Cypher |
 |---------|---------|---------|--------|
 | Type Safety | Compile-time | Runtime | Runtime |
 | Performance | Compiled | Interpreted | Interpreted |

@@ -1,7 +1,7 @@
 // Copyright 2025 SensibleDB Inc.
 // SPDX-License-Identifier: AGPL-3.0
 
-//! This is the generator for NexusQL. It transforms the AST into Rust code.
+//! This is the generator for SensibleQL. It transforms the AST into Rust code.
 //! The generator methods are broken up into separate files, grouped by general functionality.
 //! File names should be self-explanatory as to what is included in the file.
 

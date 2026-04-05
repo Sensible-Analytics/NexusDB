@@ -69,7 +69,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         id: 1,
         label: "Dog".to_string(),
         // In a real implementation, you'd set vector properties here
-        // This would typically be done through NexusQL or specific vector APIs
+        // This would typically be done through SensibleQL or specific vector APIs
     };
     tx.put_node(dog_node)?;
     
@@ -82,7 +82,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     tx.commit()?;
     
     // Perform vector similarity search (conceptual example)
-    // Actual implementation would use NexusQL or specific vector search APIs
+    // Actual implementation would use SensibleQL or specific vector search APIs
     let read_tx = db.read_transaction()?;
     let nodes = read_tx.scan_nodes()?;
     println!("Found {} nodes", nodes.len());
@@ -133,6 +133,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 ## Next Steps
 
 - Check out the [API Reference](./api-reference.md) for complete documentation
-- Learn about [NexusQL](../query-language/syntax.md) for powerful querying
+- Learn about [SensibleQL](../query-language/syntax.md) for powerful querying
 - Explore the [Features](../features/README.md) to understand advanced capabilities
 - See the [Getting Started Guide](../../overview/getting-started.md) for more detailed examples

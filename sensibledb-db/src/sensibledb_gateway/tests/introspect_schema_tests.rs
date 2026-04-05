@@ -1,12 +1,12 @@
 use std::sync::Arc;
 
 use crate::sensibledb_gateway::{
-    gateway::CoreSetter, router::router::NexusRouter, worker_pool::WorkerPool,
+    gateway::CoreSetter, router::router::SensibleRouter, worker_pool::WorkerPool,
 };
 use crate::{
     sensibledb_engine::{
         storage_core::version_info::VersionInfo,
-        traversal_core::{NexusGraphEngine, NexusGraphEngineOpts, config::Config},
+        traversal_core::{SensibleGraphEngine, SensibleGraphEngineOpts, config::Config},
     },
     sensibledb_gateway::{gateway::AppState, introspect_schema::introspect_schema_handler},
 };
@@ -20,13 +20,13 @@ use tempfile::TempDir;
 fn create_test_app_state(schema_json: Option<String>) -> Arc<AppState> {
     let temp_dir = TempDir::new().unwrap();
     let db_path = temp_dir.path().to_str().unwrap();
-    let opts = NexusGraphEngineOpts {
+    let opts = SensibleGraphEngineOpts {
         path: db_path.to_string(),
         config: Config::default(),
         version_info: VersionInfo::default(),
     };
-    let graph = Arc::new(NexusGraphEngine::new(opts).unwrap());
-    let router = Arc::new(NexusRouter::new(None, None, None));
+    let graph = Arc::new(SensibleGraphEngine::new(opts).unwrap());
+    let router = Arc::new(SensibleRouter::new(None, None, None));
     let rt = Arc::new(
         tokio::runtime::Builder::new_multi_thread()
             .worker_threads(1)

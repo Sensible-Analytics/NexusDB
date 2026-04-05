@@ -3,11 +3,11 @@
 ## TypeScript SDK
 
 ```bash
-npm install nexus-ts
+npm install sensible-ts
 ```
 
 ```typescript
-import SensibleDB from "nexus-ts";
+import SensibleDB from "sensible-ts";
 const client = new SensibleDB();
 const user = await client.query("getUser", { name: "John" });
 ```
@@ -15,7 +15,7 @@ const user = await client.query("getUser", { name: "John" });
 ## Python SDK
 
 ```bash
-pip install nexus-py
+pip install sensible-py
 ```
 
 ```python

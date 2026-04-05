@@ -9,7 +9,7 @@
 //! - Performance tests for large datasets
 
 use super::{
-    NexusGraphStorage,
+    SensibleGraphStorage,
     metadata::{NATIVE_VECTOR_ENDIANNESS, StorageMetadata, VectorEndianness},
     storage_migration::{
         convert_all_vector_properties, convert_old_vector_properties_to_new_format,
@@ -40,13 +40,13 @@ use tempfile::TempDir;
 // ============================================================================
 
 /// Helper function to create a test storage instance
-fn setup_test_storage() -> (NexusGraphStorage, TempDir) {
+fn setup_test_storage() -> (SensibleGraphStorage, TempDir) {
     let temp_dir = TempDir::new().unwrap();
     let config = Config::default();
     let version_info = VersionInfo::default();
 
     let storage =
-        NexusGraphStorage::new(temp_dir.path().to_str().unwrap(), config, version_info).unwrap();
+        SensibleGraphStorage::new(temp_dir.path().to_str().unwrap(), config, version_info).unwrap();
 
     (storage, temp_dir)
 }
@@ -96,7 +96,7 @@ fn create_old_properties(
 
 /// Populate storage with test vectors in a specific endianness
 fn populate_test_vectors(
-    storage: &mut NexusGraphStorage,
+    storage: &mut SensibleGraphStorage,
     count: usize,
     endianness: VectorEndianness,
 ) -> Result<(), GraphError> {
@@ -119,7 +119,7 @@ fn populate_test_vectors(
 
 /// Populate storage with old-format properties
 fn populate_old_properties(
-    storage: &mut NexusGraphStorage,
+    storage: &mut SensibleGraphStorage,
     count: usize,
 ) -> Result<(), GraphError> {
     let mut txn = storage.graph_env.write_txn()?;
@@ -145,7 +145,7 @@ fn populate_old_properties(
 /// Set storage metadata to a specific state
 #[allow(dead_code)]
 fn set_metadata(
-    storage: &mut NexusGraphStorage,
+    storage: &mut SensibleGraphStorage,
     metadata: StorageMetadata,
 ) -> Result<(), GraphError> {
     let mut txn = storage.graph_env.write_txn()?;
@@ -156,7 +156,7 @@ fn set_metadata(
 
 /// Read all vectors from storage and return as f64 values
 fn read_all_vectors(
-    storage: &NexusGraphStorage,
+    storage: &SensibleGraphStorage,
     endianness: VectorEndianness,
 ) -> Result<Vec<Vec<f64>>, GraphError> {
     let txn = storage.graph_env.read_txn()?;
@@ -172,7 +172,7 @@ fn read_all_vectors(
 }
 
 /// Clear all metadata from storage (simulates PreMetadata state)
-fn clear_metadata(storage: &mut NexusGraphStorage) -> Result<(), GraphError> {
+fn clear_metadata(storage: &mut SensibleGraphStorage) -> Result<(), GraphError> {
     let mut txn = storage.graph_env.write_txn()?;
     storage.metadata_db.clear(&mut txn)?;
     txn.commit()?;
@@ -180,7 +180,7 @@ fn clear_metadata(storage: &mut NexusGraphStorage) -> Result<(), GraphError> {
 }
 
 fn add_test_node(
-    storage: &NexusGraphStorage,
+    storage: &SensibleGraphStorage,
     label: &'static str,
     properties: &[(&'static str, Value)],
 ) -> u128 {
@@ -204,7 +204,7 @@ fn add_test_node(
     node_id
 }
 
-fn bm25_search_ids(storage: &NexusGraphStorage, query: &str) -> Vec<u128> {
+fn bm25_search_ids(storage: &SensibleGraphStorage, query: &str) -> Vec<u128> {
     let arena = Bump::new();
     let txn = storage.graph_env.read_txn().unwrap();
     storage

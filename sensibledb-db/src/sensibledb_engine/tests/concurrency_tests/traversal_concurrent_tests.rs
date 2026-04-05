@@ -19,7 +19,7 @@ use std::sync::{Arc, Barrier};
 use std::thread;
 use tempfile::TempDir;
 
-use crate::sensibledb_engine::storage_core::NexusGraphStorage;
+use crate::sensibledb_engine::storage_core::SensibleGraphStorage;
 use crate::sensibledb_engine::traversal_core::config::Config;
 use crate::sensibledb_engine::traversal_core::ops::g::G;
 use crate::sensibledb_engine::traversal_core::ops::in_::in_::InAdapter;
@@ -29,14 +29,14 @@ use crate::sensibledb_engine::traversal_core::ops::source::{
 };
 
 /// Setup storage for concurrent testing
-fn setup_concurrent_storage() -> (TempDir, Arc<NexusGraphStorage>) {
+fn setup_concurrent_storage() -> (TempDir, Arc<SensibleGraphStorage>) {
     let temp_dir = tempfile::tempdir().unwrap();
     let path = temp_dir.path().to_str().unwrap();
 
     let mut config = Config::default();
     config.db_max_size_gb = Some(10);
 
-    let storage = NexusGraphStorage::new(path, config, Default::default()).unwrap();
+    let storage = SensibleGraphStorage::new(path, config, Default::default()).unwrap();
     (temp_dir, Arc::new(storage))
 }
 

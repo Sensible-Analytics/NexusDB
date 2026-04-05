@@ -1,6 +1,6 @@
 use crate::{
     sensibledb_engine::{
-        storage_core::NexusGraphStorage, traversal_core::traversal_value::TraversalValue,
+        storage_core::SensibleGraphStorage, traversal_core::traversal_value::TraversalValue,
         types::GraphError,
     },
     protocol::value::Value,
@@ -13,7 +13,7 @@ where
     'db: 'arena,
     'arena: 'txn,
 {
-    pub storage: &'db NexusGraphStorage,
+    pub storage: &'db SensibleGraphStorage,
     pub arena: &'arena bumpalo::Bump,
     pub txn: &'txn RoTxn<'db>,
     pub inner: I,
@@ -82,7 +82,7 @@ where
     'db: 'arena,
     'arena: 'txn,
 {
-    pub storage: &'db NexusGraphStorage,
+    pub storage: &'db SensibleGraphStorage,
     pub arena: &'arena bumpalo::Bump,
     pub txn: &'txn mut RwTxn<'db>,
     pub inner: I,
@@ -103,7 +103,7 @@ impl<'db, 'arena, 'txn, I: Iterator<Item = Result<TraversalValue<'arena>, GraphE
     RwTraversalIterator<'db, 'arena, 'txn, I>
 {
     pub fn new(
-        storage: &'db NexusGraphStorage,
+        storage: &'db SensibleGraphStorage,
         txn: &'txn mut RwTxn<'db>,
         arena: &'arena bumpalo::Bump,
         inner: I,

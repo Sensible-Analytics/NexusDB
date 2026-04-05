@@ -1,7 +1,7 @@
 use crate::{
     sensibledb_engine::{
         bm25::bm25::{BM25_SCHEMA_VERSION, HBM25Config},
-        storage_core::NexusGraphStorage,
+        storage_core::SensibleGraphStorage,
         types::GraphError,
         vector_core::{vector::HVector, vector_core},
     },
@@ -14,7 +14,7 @@ use std::{collections::HashMap, ops::Bound};
 
 use super::metadata::{NATIVE_VECTOR_ENDIANNESS, StorageMetadata, VectorEndianness};
 
-pub fn migrate(storage: &mut NexusGraphStorage) -> Result<(), GraphError> {
+pub fn migrate(storage: &mut SensibleGraphStorage) -> Result<(), GraphError> {
     let mut metadata = {
         let txn = storage.graph_env.read_txn()?;
         StorageMetadata::read(&txn, &storage.metadata_db)?
@@ -44,7 +44,7 @@ pub fn migrate(storage: &mut NexusGraphStorage) -> Result<(), GraphError> {
     Ok(())
 }
 
-fn migrate_bm25(storage: &mut NexusGraphStorage) -> Result<(), GraphError> {
+fn migrate_bm25(storage: &mut SensibleGraphStorage) -> Result<(), GraphError> {
     const BATCH_SIZE: usize = 1024;
 
     let Some(bm25) = storage.bm25.as_ref() else {
@@ -93,7 +93,7 @@ fn migrate_bm25(storage: &mut NexusGraphStorage) -> Result<(), GraphError> {
 }
 
 fn rebuild_bm25_batch(
-    storage: &NexusGraphStorage,
+    storage: &SensibleGraphStorage,
     bm25: &HBM25Config,
     batch: &[(u128, Vec<u8>)],
 ) -> Result<(), GraphError> {
@@ -112,7 +112,7 @@ fn rebuild_bm25_batch(
 }
 
 pub(crate) fn migrate_pre_metadata_to_native_vector_endianness(
-    storage: &mut NexusGraphStorage,
+    storage: &mut SensibleGraphStorage,
 ) -> Result<StorageMetadata, GraphError> {
     // In PreMetadata, all vectors are stored as big endian.
     // If we are on a big endian machine, all we need to do is store the metadata.
@@ -140,7 +140,7 @@ pub(crate) fn migrate_pre_metadata_to_native_vector_endianness(
 
 pub(crate) fn convert_vectors_to_native_endianness(
     currently_stored_vector_endianness: VectorEndianness,
-    storage: &mut NexusGraphStorage,
+    storage: &mut SensibleGraphStorage,
 ) -> Result<StorageMetadata, GraphError> {
     // Convert all vectors from currently_stored_vector_endianness to native endianness
     convert_all_vectors(currently_stored_vector_endianness, storage)?;
@@ -159,7 +159,7 @@ pub(crate) fn convert_vectors_to_native_endianness(
 
 pub(crate) fn convert_all_vectors(
     source_endianness: VectorEndianness,
-    storage: &mut NexusGraphStorage,
+    storage: &mut SensibleGraphStorage,
 ) -> Result<(), GraphError> {
     const BATCH_SIZE: usize = 1024;
 
@@ -281,7 +281,7 @@ pub(crate) fn convert_vector_endianness<'arena>(
 }
 
 pub(crate) fn convert_all_vector_properties(
-    storage: &mut NexusGraphStorage,
+    storage: &mut SensibleGraphStorage,
 ) -> Result<(), GraphError> {
     const BATCH_SIZE: usize = 1024;
 
@@ -377,7 +377,7 @@ pub(crate) fn convert_old_vector_properties_to_new_format(
     new_vector.to_bincode_bytes().map_err(GraphError::from)
 }
 
-fn verify_vectors_and_repair(storage: &NexusGraphStorage) -> Result<(), GraphError> {
+fn verify_vectors_and_repair(storage: &SensibleGraphStorage) -> Result<(), GraphError> {
     // Verify that all vectors at level > 0 also exist at level 0 and collect ones that need repair
     println!("\nVerifying vector integrity after migration...");
     let vectors_to_repair: Vec<(u128, usize)> = {
@@ -471,7 +471,7 @@ fn verify_vectors_and_repair(storage: &NexusGraphStorage) -> Result<(), GraphErr
     Ok(())
 }
 
-fn remove_orphaned_vector_edges(storage: &NexusGraphStorage) -> Result<(), GraphError> {
+fn remove_orphaned_vector_edges(storage: &SensibleGraphStorage) -> Result<(), GraphError> {
     let txn = storage.graph_env.read_txn()?;
     let mut orphaned_edges = Vec::new();
 

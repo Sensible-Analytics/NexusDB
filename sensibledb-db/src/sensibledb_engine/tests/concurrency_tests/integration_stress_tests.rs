@@ -23,7 +23,7 @@ use std::thread;
 use std::time::Duration;
 use tempfile::TempDir;
 
-use crate::sensibledb_engine::storage_core::NexusGraphStorage;
+use crate::sensibledb_engine::storage_core::SensibleGraphStorage;
 use crate::sensibledb_engine::traversal_core::config::Config;
 use crate::sensibledb_engine::traversal_core::ops::g::G;
 use crate::sensibledb_engine::traversal_core::ops::out::out::OutAdapter;
@@ -32,14 +32,14 @@ use crate::sensibledb_engine::traversal_core::ops::source::{
 };
 
 /// Setup storage with appropriate configuration for stress testing
-fn setup_stress_storage() -> (Arc<NexusGraphStorage>, TempDir) {
+fn setup_stress_storage() -> (Arc<SensibleGraphStorage>, TempDir) {
     let temp_dir = tempfile::tempdir().unwrap();
     let path = temp_dir.path().to_str().unwrap();
 
     let mut config = Config::default();
     config.db_max_size_gb = Some(20); // Large size for stress tests
 
-    let storage = NexusGraphStorage::new(path, config, Default::default()).unwrap();
+    let storage = SensibleGraphStorage::new(path, config, Default::default()).unwrap();
     (Arc::new(storage), temp_dir)
 }
 

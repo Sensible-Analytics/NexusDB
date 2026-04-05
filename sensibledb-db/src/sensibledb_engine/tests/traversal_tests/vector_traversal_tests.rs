@@ -6,7 +6,7 @@ use tempfile::TempDir;
 
 use crate::{
     sensibledb_engine::{
-        storage_core::NexusGraphStorage,
+        storage_core::SensibleGraphStorage,
         traversal_core::ops::{
             g::G,
             in_::to_v::ToVAdapter,
@@ -30,10 +30,10 @@ use crate::{
 
 type Filter = fn(&HVector, &RoTxn) -> bool;
 
-fn setup_test_db() -> (TempDir, Arc<NexusGraphStorage>) {
+fn setup_test_db() -> (TempDir, Arc<SensibleGraphStorage>) {
     let temp_dir = TempDir::new().unwrap();
     let db_path = temp_dir.path().to_str().unwrap();
-    let storage = NexusGraphStorage::new(
+    let storage = SensibleGraphStorage::new(
         db_path,
         crate::sensibledb_engine::traversal_core::config::Config::default(),
         Default::default(),
@@ -673,7 +673,7 @@ fn test_v_from_type_after_migration() {
 
     // Helper to clear metadata (simulates PreMetadata state)
     fn clear_metadata(
-        storage: &mut crate::sensibledb_engine::storage_core::NexusGraphStorage,
+        storage: &mut crate::sensibledb_engine::storage_core::SensibleGraphStorage,
     ) -> Result<(), crate::sensibledb_engine::types::GraphError> {
         let mut txn = storage.graph_env.write_txn()?;
         storage.metadata_db.clear(&mut txn)?;

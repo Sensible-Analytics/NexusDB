@@ -1,6 +1,6 @@
 use crate::{
     debug_println,
-    sensibledb_engine::{storage_core::NexusGraphStorage, types::GraphError},
+    sensibledb_engine::{storage_core::SensibleGraphStorage, types::GraphError},
     utils::items::Node,
 };
 use heed3::{RoIter, RoTxn, types::*};
@@ -25,7 +25,7 @@ pub trait GraphVisualization {
     fn get_db_stats_json(&self, txn: &RoTxn) -> Result<String, GraphError>;
 }
 
-impl GraphVisualization for NexusGraphStorage {
+impl GraphVisualization for SensibleGraphStorage {
     fn nodes_edges_to_json(
         &self,
         txn: &RoTxn,
@@ -62,7 +62,7 @@ impl GraphVisualization for NexusGraphStorage {
 }
 
 /// Implementing the helper functions needed to get the data for graph visualization
-impl NexusGraphStorage {
+impl SensibleGraphStorage {
     /// Get the top k nodes and all of the edges associated with them by checking their
     /// cardinalities (total number of in and out edges)
     #[allow(clippy::type_complexity)]

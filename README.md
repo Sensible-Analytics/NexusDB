@@ -22,9 +22,9 @@ SensibleDB primarily operates with a graph + vector data model, but it can also 
 | **Built-in MCP tools**  | Nexus has built-in MCP support to allow your agents to discover data and walk the graph rather than generating human readable queries. |
 | **Built-in Embeddings** | No need to embed your data before sending it to Nexus, just use the `Embed` function to vectorize text.                                |
 | **Tooling for RAG**     | SensibleDB has a built-in vector search, keyword search, and graph traversals that can be used to power any type of RAG applications.     |
-| **Secure by Default**   | SensibleDB is private by default. You can only access your data through your compiled NexusQL queries.                                    |
+| **Secure by Default**   | SensibleDB is private by default. You can only access your data through your compiled SensibleQL queries.                                    |
 | **Ultra-Low Latency**   | Nexus is built in Rust and uses LMDB as its storage engine to provide extremely low latencies.                                         |
-| **Type-Safe Queries**   | NexusQL is 100% type-safe, which lets you develop and deploy with the confidence that your queries will execute in production          |
+| **Type-Safe Queries**   | SensibleQL is 100% type-safe, which lets you develop and deploy with the confidence that your queries will execute in production          |
 | **Embedded Mode**       | Use SensibleDB as a lightweight embedded database in your Rust applications with zero external dependencies.                               |
 
 ## Embedded Mode
@@ -107,10 +107,10 @@ Start by installing the SensibleDB CLI tool to deploy Nexus locally.
    nexus push dev
    ```
 
-6. Start calling them using our [TypeScript SDK](https://github.com/SensibleDB/nexus-ts) or [Python SDK](https://github.com/SensibleDB/nexus-py). For example:
+6. Start calling them using our [TypeScript SDK](https://github.com/SensibleDB/sensible-ts) or [Python SDK](https://github.com/SensibleDB/sensible-py). For example:
 
    ```typescript
-   import SensibleDB from "nexus-ts";
+   import SensibleDB from "sensible-ts";
 
    // Create a new SensibleDB client
    // The default port is 6969

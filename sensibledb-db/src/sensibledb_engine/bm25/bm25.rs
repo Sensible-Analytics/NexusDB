@@ -1,7 +1,7 @@
 use crate::{
     debug_println,
     sensibledb_engine::{
-        storage_core::NexusGraphStorage,
+        storage_core::SensibleGraphStorage,
         types::GraphError,
         vector_core::{hnsw::HNSW, vector::HVector},
     },
@@ -937,7 +937,7 @@ pub trait HybridSearch {
     ) -> impl std::future::Future<Output = Result<Vec<(u128, f32)>, GraphError>> + Send;
 }
 
-impl HybridSearch for NexusGraphStorage {
+impl HybridSearch for SensibleGraphStorage {
     async fn hybrid_search(
         self,
         query: &str,

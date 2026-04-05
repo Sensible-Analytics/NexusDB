@@ -1,6 +1,6 @@
 use crate::sensibledb_engine::{
     storage_core::{
-        NexusGraphStorage, StorageConfig, storage_methods::DBMethods, version_info::VersionInfo,
+        SensibleGraphStorage, StorageConfig, storage_methods::DBMethods, version_info::VersionInfo,
     },
     traversal_core::config::Config,
     types::SecondaryIndex,
@@ -8,13 +8,13 @@ use crate::sensibledb_engine::{
 use tempfile::TempDir;
 
 // Helper function to create a test storage instance
-fn setup_test_storage() -> (NexusGraphStorage, TempDir) {
+fn setup_test_storage() -> (SensibleGraphStorage, TempDir) {
     let temp_dir = TempDir::new().unwrap();
     let config = Config::default();
     let version_info = VersionInfo::default();
 
     let storage =
-        NexusGraphStorage::new(temp_dir.path().to_str().unwrap(), config, version_info).unwrap();
+        SensibleGraphStorage::new(temp_dir.path().to_str().unwrap(), config, version_info).unwrap();
 
     (storage, temp_dir)
 }
@@ -26,14 +26,14 @@ fn setup_test_storage() -> (NexusGraphStorage, TempDir) {
 #[test]
 fn test_node_key() {
     let id = 12345u128;
-    let key = NexusGraphStorage::node_key(&id);
+    let key = SensibleGraphStorage::node_key(&id);
     assert_eq!(*key, id);
 }
 
 #[test]
 fn test_edge_key() {
     let id = 67890u128;
-    let key = NexusGraphStorage::edge_key(&id);
+    let key = SensibleGraphStorage::edge_key(&id);
     assert_eq!(*key, id);
 }
 
@@ -42,7 +42,7 @@ fn test_out_edge_key() {
     let from_node_id = 100u128;
     let label = [1, 2, 3, 4];
 
-    let key = NexusGraphStorage::out_edge_key(&from_node_id, &label);
+    let key = SensibleGraphStorage::out_edge_key(&from_node_id, &label);
 
     // Verify key structure
     assert_eq!(key.len(), 20);
@@ -64,7 +64,7 @@ fn test_in_edge_key() {
     let to_node_id = 200u128;
     let label = [5, 6, 7, 8];
 
-    let key = NexusGraphStorage::in_edge_key(&to_node_id, &label);
+    let key = SensibleGraphStorage::in_edge_key(&to_node_id, &label);
 
     // Verify key structure
     assert_eq!(key.len(), 20);
@@ -86,8 +86,8 @@ fn test_out_edge_key_deterministic() {
     let from_node_id = 42u128;
     let label = [9, 8, 7, 6];
 
-    let key1 = NexusGraphStorage::out_edge_key(&from_node_id, &label);
-    let key2 = NexusGraphStorage::out_edge_key(&from_node_id, &label);
+    let key1 = SensibleGraphStorage::out_edge_key(&from_node_id, &label);
+    let key2 = SensibleGraphStorage::out_edge_key(&from_node_id, &label);
 
     assert_eq!(key1, key2);
 }
@@ -97,8 +97,8 @@ fn test_in_edge_key_deterministic() {
     let to_node_id = 84u128;
     let label = [1, 1, 1, 1];
 
-    let key1 = NexusGraphStorage::in_edge_key(&to_node_id, &label);
-    let key2 = NexusGraphStorage::in_edge_key(&to_node_id, &label);
+    let key1 = SensibleGraphStorage::in_edge_key(&to_node_id, &label);
+    let key2 = SensibleGraphStorage::in_edge_key(&to_node_id, &label);
 
     assert_eq!(key1, key2);
 }
@@ -108,7 +108,7 @@ fn test_pack_edge_data() {
     let edge_id = 123u128;
     let node_id = 456u128;
 
-    let packed = NexusGraphStorage::pack_edge_data(&edge_id, &node_id);
+    let packed = SensibleGraphStorage::pack_edge_data(&edge_id, &node_id);
 
     // Verify packed data structure
     assert_eq!(packed.len(), 32);
@@ -133,9 +133,9 @@ fn test_unpack_adj_edge_data() {
     let edge_id = 789u128;
     let node_id = 1011u128;
 
-    let packed = NexusGraphStorage::pack_edge_data(&edge_id, &node_id);
+    let packed = SensibleGraphStorage::pack_edge_data(&edge_id, &node_id);
     let (unpacked_edge_id, unpacked_node_id) =
-        NexusGraphStorage::unpack_adj_edge_data(&packed).unwrap();
+        SensibleGraphStorage::unpack_adj_edge_data(&packed).unwrap();
 
     assert_eq!(unpacked_edge_id, edge_id);
     assert_eq!(unpacked_node_id, node_id);
@@ -152,9 +152,9 @@ fn test_pack_unpack_edge_data_roundtrip() {
     ];
 
     for (edge_id, node_id) in test_cases {
-        let packed = NexusGraphStorage::pack_edge_data(&edge_id, &node_id);
+        let packed = SensibleGraphStorage::pack_edge_data(&edge_id, &node_id);
         let (unpacked_edge, unpacked_node) =
-            NexusGraphStorage::unpack_adj_edge_data(&packed).unwrap();
+            SensibleGraphStorage::unpack_adj_edge_data(&packed).unwrap();
 
         assert_eq!(
             unpacked_edge, edge_id,
@@ -175,7 +175,7 @@ fn test_unpack_adj_edge_data_invalid_length() {
     let invalid_data = vec![1u8, 2, 3, 4, 5]; // Too short
 
     // This will panic when trying to slice the data
-    let _ = NexusGraphStorage::unpack_adj_edge_data(&invalid_data);
+    let _ = SensibleGraphStorage::unpack_adj_edge_data(&invalid_data);
 }
 
 // ============================================================================
@@ -249,7 +249,7 @@ fn test_storage_creation() {
     let config = Config::default();
     let version_info = VersionInfo::default();
 
-    let result = NexusGraphStorage::new(temp_dir.path().to_str().unwrap(), config, version_info);
+    let result = SensibleGraphStorage::new(temp_dir.path().to_str().unwrap(), config, version_info);
 
     assert!(result.is_ok());
     let _ = result.unwrap();
@@ -279,7 +279,7 @@ fn test_storage_with_large_db_size() {
 
     let version_info = VersionInfo::default();
 
-    let result = NexusGraphStorage::new(temp_dir.path().to_str().unwrap(), config, version_info);
+    let result = SensibleGraphStorage::new(temp_dir.path().to_str().unwrap(), config, version_info);
 
     assert!(result.is_ok());
 }
@@ -291,14 +291,14 @@ fn test_storage_with_large_db_size() {
 #[test]
 fn test_edge_key_with_zero_id() {
     let id = 0u128;
-    let key = NexusGraphStorage::edge_key(&id);
+    let key = SensibleGraphStorage::edge_key(&id);
     assert_eq!(*key, 0);
 }
 
 #[test]
 fn test_edge_key_with_max_id() {
     let id = u128::MAX;
-    let key = NexusGraphStorage::edge_key(&id);
+    let key = SensibleGraphStorage::edge_key(&id);
     assert_eq!(*key, u128::MAX);
 }
 
@@ -307,7 +307,7 @@ fn test_out_edge_key_with_zero_values() {
     let from_node_id = 0u128;
     let label = [0, 0, 0, 0];
 
-    let key = NexusGraphStorage::out_edge_key(&from_node_id, &label);
+    let key = SensibleGraphStorage::out_edge_key(&from_node_id, &label);
     assert_eq!(key, [0u8; 20]);
 }
 
@@ -316,7 +316,7 @@ fn test_out_edge_key_with_max_values() {
     let from_node_id = u128::MAX;
     let label = [255, 255, 255, 255];
 
-    let key = NexusGraphStorage::out_edge_key(&from_node_id, &label);
+    let key = SensibleGraphStorage::out_edge_key(&from_node_id, &label);
 
     // All bytes should be 255
     assert!(key.iter().all(|&b| b == 255));
@@ -327,7 +327,7 @@ fn test_pack_edge_data_with_zero_values() {
     let edge_id = 0u128;
     let node_id = 0u128;
 
-    let packed = NexusGraphStorage::pack_edge_data(&edge_id, &node_id);
+    let packed = SensibleGraphStorage::pack_edge_data(&edge_id, &node_id);
     assert_eq!(packed, [0u8; 32]);
 }
 
@@ -336,7 +336,7 @@ fn test_pack_edge_data_with_max_values() {
     let edge_id = u128::MAX;
     let node_id = u128::MAX;
 
-    let packed = NexusGraphStorage::pack_edge_data(&edge_id, &node_id);
+    let packed = SensibleGraphStorage::pack_edge_data(&edge_id, &node_id);
     assert!(packed.iter().all(|&b| b == 255));
 }
 
@@ -350,8 +350,8 @@ fn test_out_edge_key_different_labels_produce_different_keys() {
     let label1 = [1, 2, 3, 4];
     let label2 = [5, 6, 7, 8];
 
-    let key1 = NexusGraphStorage::out_edge_key(&node_id, &label1);
-    let key2 = NexusGraphStorage::out_edge_key(&node_id, &label2);
+    let key1 = SensibleGraphStorage::out_edge_key(&node_id, &label1);
+    let key2 = SensibleGraphStorage::out_edge_key(&node_id, &label2);
 
     assert_ne!(key1, key2);
 }
@@ -362,8 +362,8 @@ fn test_out_edge_key_different_nodes_produce_different_keys() {
     let node2 = 200u128;
     let label = [1, 2, 3, 4];
 
-    let key1 = NexusGraphStorage::out_edge_key(&node1, &label);
-    let key2 = NexusGraphStorage::out_edge_key(&node2, &label);
+    let key1 = SensibleGraphStorage::out_edge_key(&node1, &label);
+    let key2 = SensibleGraphStorage::out_edge_key(&node2, &label);
 
     assert_ne!(key1, key2);
 }
@@ -374,8 +374,8 @@ fn test_in_edge_key_different_labels_produce_different_keys() {
     let label1 = [1, 2, 3, 4];
     let label2 = [5, 6, 7, 8];
 
-    let key1 = NexusGraphStorage::in_edge_key(&node_id, &label1);
-    let key2 = NexusGraphStorage::in_edge_key(&node_id, &label2);
+    let key1 = SensibleGraphStorage::in_edge_key(&node_id, &label1);
+    let key2 = SensibleGraphStorage::in_edge_key(&node_id, &label2);
 
     assert_ne!(key1, key2);
 }
@@ -386,8 +386,8 @@ fn test_out_and_in_edge_keys_same_for_same_node_and_label() {
     let node_id = 12345u128;
     let label = [9, 8, 7, 6];
 
-    let out_key = NexusGraphStorage::out_edge_key(&node_id, &label);
-    let in_key = NexusGraphStorage::in_edge_key(&node_id, &label);
+    let out_key = SensibleGraphStorage::out_edge_key(&node_id, &label);
+    let in_key = SensibleGraphStorage::in_edge_key(&node_id, &label);
 
     // They should be equal since they use the same structure
     assert_eq!(out_key, in_key);
@@ -399,8 +399,8 @@ fn test_pack_edge_data_different_edge_ids_produce_different_data() {
     let edge2 = 200u128;
     let node_id = 500u128;
 
-    let packed1 = NexusGraphStorage::pack_edge_data(&edge1, &node_id);
-    let packed2 = NexusGraphStorage::pack_edge_data(&edge2, &node_id);
+    let packed1 = SensibleGraphStorage::pack_edge_data(&edge1, &node_id);
+    let packed2 = SensibleGraphStorage::pack_edge_data(&edge2, &node_id);
 
     assert_ne!(packed1, packed2);
 }
@@ -411,8 +411,8 @@ fn test_pack_edge_data_different_node_ids_produce_different_data() {
     let node1 = 500u128;
     let node2 = 600u128;
 
-    let packed1 = NexusGraphStorage::pack_edge_data(&edge_id, &node1);
-    let packed2 = NexusGraphStorage::pack_edge_data(&edge_id, &node2);
+    let packed1 = SensibleGraphStorage::pack_edge_data(&edge_id, &node1);
+    let packed2 = SensibleGraphStorage::pack_edge_data(&edge_id, &node2);
 
     assert_ne!(packed1, packed2);
 }
@@ -423,7 +423,7 @@ fn test_unpack_adj_edge_data_short_slice_panics() {
     // 31 bytes - just one byte short
     // Note: Current implementation panics on short slices during slice indexing
     let short_data = vec![0u8; 31];
-    let _ = NexusGraphStorage::unpack_adj_edge_data(&short_data);
+    let _ = SensibleGraphStorage::unpack_adj_edge_data(&short_data);
 }
 
 #[test]
@@ -431,7 +431,7 @@ fn test_unpack_adj_edge_data_short_slice_panics() {
 fn test_unpack_adj_edge_data_empty_slice_panics() {
     // Note: Current implementation panics on empty slices during slice indexing
     let empty_data: Vec<u8> = vec![];
-    let _ = NexusGraphStorage::unpack_adj_edge_data(&empty_data);
+    let _ = SensibleGraphStorage::unpack_adj_edge_data(&empty_data);
 }
 
 #[test]
@@ -440,7 +440,7 @@ fn test_unpack_adj_edge_data_16_bytes_panics() {
     // Only edge_id portion, missing node_id
     // Note: Current implementation panics on partial slices during slice indexing
     let partial_data = vec![0u8; 16];
-    let _ = NexusGraphStorage::unpack_adj_edge_data(&partial_data);
+    let _ = SensibleGraphStorage::unpack_adj_edge_data(&partial_data);
 }
 
 #[test]
@@ -449,8 +449,8 @@ fn test_pack_unpack_preserves_byte_order() {
     let edge_id = 0x0102030405060708090A0B0C0D0E0F10u128;
     let node_id = 0x1112131415161718191A1B1C1D1E1F20u128;
 
-    let packed = NexusGraphStorage::pack_edge_data(&edge_id, &node_id);
-    let (unpacked_edge, unpacked_node) = NexusGraphStorage::unpack_adj_edge_data(&packed).unwrap();
+    let packed = SensibleGraphStorage::pack_edge_data(&edge_id, &node_id);
+    let (unpacked_edge, unpacked_node) = SensibleGraphStorage::unpack_adj_edge_data(&packed).unwrap();
 
     assert_eq!(unpacked_edge, edge_id);
     assert_eq!(unpacked_node, node_id);
@@ -461,7 +461,7 @@ fn test_out_edge_key_preserves_node_id_byte_order() {
     let node_id = 0x0102030405060708090A0B0C0D0E0F10u128;
     let label = [0xAA, 0xBB, 0xCC, 0xDD];
 
-    let key = NexusGraphStorage::out_edge_key(&node_id, &label);
+    let key = SensibleGraphStorage::out_edge_key(&node_id, &label);
 
     // Extract node_id from key and verify
     let extracted_node_id = u128::from_be_bytes(key[0..16].try_into().unwrap());
@@ -508,36 +508,36 @@ fn create_test_edge<'a>(
     }
 }
 
-fn insert_node(storage: &NexusGraphStorage, node: &Node) {
+fn insert_node(storage: &SensibleGraphStorage, node: &Node) {
     let mut txn = storage.graph_env.write_txn().unwrap();
     let bytes = node.to_bincode_bytes().unwrap();
     storage
         .nodes_db
-        .put(&mut txn, NexusGraphStorage::node_key(&node.id), &bytes)
+        .put(&mut txn, SensibleGraphStorage::node_key(&node.id), &bytes)
         .unwrap();
     txn.commit().unwrap();
 }
 
-fn insert_edge(storage: &NexusGraphStorage, edge: &Edge) {
+fn insert_edge(storage: &SensibleGraphStorage, edge: &Edge) {
     let mut txn = storage.graph_env.write_txn().unwrap();
     let bytes = edge.to_bincode_bytes().unwrap();
     storage
         .edges_db
-        .put(&mut txn, NexusGraphStorage::edge_key(&edge.id), &bytes)
+        .put(&mut txn, SensibleGraphStorage::edge_key(&edge.id), &bytes)
         .unwrap();
 
     // Insert into out_edges_db
     let label_hash = hash_label(edge.label, None);
-    let out_key = NexusGraphStorage::out_edge_key(&edge.from_node, &label_hash);
-    let edge_data = NexusGraphStorage::pack_edge_data(&edge.id, &edge.to_node);
+    let out_key = SensibleGraphStorage::out_edge_key(&edge.from_node, &label_hash);
+    let edge_data = SensibleGraphStorage::pack_edge_data(&edge.id, &edge.to_node);
     storage
         .out_edges_db
         .put(&mut txn, &out_key, &edge_data)
         .unwrap();
 
     // Insert into in_edges_db
-    let in_key = NexusGraphStorage::in_edge_key(&edge.to_node, &label_hash);
-    let in_edge_data = NexusGraphStorage::pack_edge_data(&edge.id, &edge.from_node);
+    let in_key = SensibleGraphStorage::in_edge_key(&edge.to_node, &label_hash);
+    let in_edge_data = SensibleGraphStorage::pack_edge_data(&edge.id, &edge.from_node);
     storage
         .in_edges_db
         .put(&mut txn, &in_key, &in_edge_data)
@@ -815,7 +815,7 @@ fn test_drop_edge_verifies_out_edges_db_cleanup() {
     // Verify out_edges_db has the entry
     let txn = storage.graph_env.read_txn().unwrap();
     let label_hash = hash_label("LINK", None);
-    let out_key = NexusGraphStorage::out_edge_key(&node1.id, &label_hash);
+    let out_key = SensibleGraphStorage::out_edge_key(&node1.id, &label_hash);
     let out_entry = storage.out_edges_db.get(&txn, &out_key).unwrap();
     assert!(out_entry.is_some());
     drop(txn);
@@ -847,7 +847,7 @@ fn test_drop_edge_verifies_in_edges_db_cleanup() {
     // Verify in_edges_db has the entry
     let txn = storage.graph_env.read_txn().unwrap();
     let label_hash = hash_label("LINK", None);
-    let in_key = NexusGraphStorage::in_edge_key(&node2.id, &label_hash);
+    let in_key = SensibleGraphStorage::in_edge_key(&node2.id, &label_hash);
     let in_entry = storage.in_edges_db.get(&txn, &in_key).unwrap();
     assert!(in_entry.is_some());
     drop(txn);

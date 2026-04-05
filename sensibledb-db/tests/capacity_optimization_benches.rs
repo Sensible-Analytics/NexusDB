@@ -10,7 +10,7 @@ mod tests {
     use sensibledb_db::{
         sensibledb_engine::{
             bm25::bm25::{BM25, HBM25Config},
-            storage_core::{NexusGraphStorage, storage_methods::StorageMethods},
+            storage_core::{SensibleGraphStorage, storage_methods::StorageMethods},
             traversal_core::{
                 config::Config,
                 ops::{
@@ -48,17 +48,17 @@ mod tests {
         bm25.search(txn, query, limit, arena)
     }
 
-    fn setup_test_db(temp_dir: &TempDir) -> Arc<NexusGraphStorage> {
+    fn setup_test_db(temp_dir: &TempDir) -> Arc<SensibleGraphStorage> {
         let db_path = temp_dir.path().to_str().unwrap();
 
         let mut config = Config::default();
         config.bm25 = Some(true);
 
-        let storage = NexusGraphStorage::new(db_path, config, Default::default()).unwrap();
+        let storage = SensibleGraphStorage::new(db_path, config, Default::default()).unwrap();
         Arc::new(storage)
     }
 
-    // fn setup_db_with_nodes(count: usize) -> (Arc<NexusGraphStorage>, TempDir) {
+    // fn setup_db_with_nodes(count: usize) -> (Arc<SensibleGraphStorage>, TempDir) {
     //     let (storage, temp_dir) = setup_test_db();
     //     let mut txn = storage.graph_env.write_txn().unwrap();
     //     let arena = Bump::new();
@@ -137,7 +137,7 @@ mod tests {
                 .prefix_iter(&rtxn, &hub_node.id().to_be_bytes())
                 .unwrap()
                 .filter_map(|result| match result {
-                    Ok((_, value)) => match NexusGraphStorage::unpack_adj_edge_data(value) {
+                    Ok((_, value)) => match SensibleGraphStorage::unpack_adj_edge_data(value) {
                         Ok((edge_id, to_node)) => {
                             if connected_node_ids.insert(to_node)
                                 && let Ok(node) = storage.get_node(&rtxn, &to_node, &arena)
@@ -172,7 +172,7 @@ mod tests {
                 .prefix_iter(&rtxn, &hub_node.id().to_be_bytes())
                 .unwrap()
                 .filter_map(|result| match result {
-                    Ok((_, value)) => match NexusGraphStorage::unpack_adj_edge_data(value) {
+                    Ok((_, value)) => match SensibleGraphStorage::unpack_adj_edge_data(value) {
                         Ok((edge_id, to_node)) => {
                             if connected_node_ids.insert(to_node)
                                 && let Ok(node) = storage.get_node(&rtxn, &to_node, &arena)
@@ -205,7 +205,7 @@ mod tests {
                 .prefix_iter(&rtxn, &hub_node.id().to_be_bytes())
                 .unwrap()
                 .filter_map(|result| match result {
-                    Ok((_, value)) => match NexusGraphStorage::unpack_adj_edge_data(value) {
+                    Ok((_, value)) => match SensibleGraphStorage::unpack_adj_edge_data(value) {
                         Ok((edge_id, to_node)) => {
                             if connected_node_ids.insert(to_node)
                                 && let Ok(node) = storage.get_node(&rtxn, &to_node, &arena)
@@ -240,7 +240,7 @@ mod tests {
                 .prefix_iter(&rtxn, &hub_node.id().to_be_bytes())
                 .unwrap()
                 .filter_map(|result| match result {
-                    Ok((_, value)) => match NexusGraphStorage::unpack_adj_edge_data(value) {
+                    Ok((_, value)) => match SensibleGraphStorage::unpack_adj_edge_data(value) {
                         Ok((edge_id, to_node)) => {
                             if connected_node_ids.insert(to_node)
                                 && let Ok(node) = storage.get_node(&rtxn, &to_node, &arena)

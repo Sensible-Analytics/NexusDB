@@ -149,7 +149,7 @@ mod tests {
         sensibledb_engine::{
             storage_core::version_info::VersionInfo,
             traversal_core::{
-                NexusGraphEngine, NexusGraphEngineOpts,
+                SensibleGraphEngine, SensibleGraphEngineOpts,
                 config::Config,
                 ops::{g::G, source::add_n::AddNAdapter},
             },
@@ -161,15 +161,15 @@ mod tests {
     use std::sync::Arc;
     use tempfile::TempDir;
 
-    fn setup_test_engine() -> (NexusGraphEngine, TempDir) {
+    fn setup_test_engine() -> (SensibleGraphEngine, TempDir) {
         let temp_dir = TempDir::new().unwrap();
         let db_path = temp_dir.path().to_str().unwrap();
-        let opts = NexusGraphEngineOpts {
+        let opts = SensibleGraphEngineOpts {
             path: db_path.to_string(),
             config: Config::default(),
             version_info: VersionInfo::default(),
         };
-        let engine = NexusGraphEngine::new(opts).unwrap();
+        let engine = SensibleGraphEngine::new(opts).unwrap();
         (engine, temp_dir)
     }
 

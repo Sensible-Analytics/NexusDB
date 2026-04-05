@@ -1,7 +1,7 @@
 # Parser Module
 
 ## Overview
-The parser module transforms NexusQL source code into an Abstract Syntax Tree (AST) using the Pest parser generator framework.
+The parser module transforms SensibleQL source code into an Abstract Syntax Tree (AST) using the Pest parser generator framework.
 
 ## Structure
 

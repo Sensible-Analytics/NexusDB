@@ -143,8 +143,8 @@ The server process that hosts compiled queries and handles requests.
 
 **Architecture:**
 - Loads compiled queries via inventory crate route discovery
-- Creates NexusGraphEngine with LMDB storage backend
-- Starts NexusGateway on configured port (default: 6969)
+- Creates SensibleGraphEngine with LMDB storage backend
+- Starts SensibleGateway on configured port (default: 6969)
 - Routes HTTP requests to registered handlers
 
 **Environment Variables:**

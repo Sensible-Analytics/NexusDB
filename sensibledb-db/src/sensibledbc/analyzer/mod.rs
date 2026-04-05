@@ -1,7 +1,7 @@
 // Copyright 2025 SensibleDB Inc.
 // SPDX-License-Identifier: AGPL-3.0
 
-//! This is the static analyzer for NexusQL.
+//! This is the static analyzer for SensibleQL.
 //! It type checks the queries for grammatical and semantic correctness.
 //! The analyzer methods are broken up into separate files within /methods, grouped by general functionality.
 //! File names should be self-explanatory as to what is included in the file.

@@ -5,7 +5,7 @@ use super::super::tr_val::TraversalValue;
 use crate::sensibledb_engine::{
     bm25::bm25::{BM25, HybridSearch},
     graph_core::traversal_iter::RoTraversalIterator,
-    storage_core::{NexusGraphStorage, storage_methods::StorageMethods},
+    storage_core::{SensibleGraphStorage, storage_methods::StorageMethods},
     types::GraphError,
 };
 use std::sync::Arc;
@@ -13,7 +13,7 @@ use std::sync::Arc;
 pub struct HybridSearchBM25<'scope, 'inner> {
     txn: &'scope RoTxn<'scope>,
     iter: std::vec::IntoIter<(u128, f32)>,
-    storage: Arc<NexusGraphStorage>,
+    storage: Arc<SensibleGraphStorage>,
     label: &'inner str,
 }
 
