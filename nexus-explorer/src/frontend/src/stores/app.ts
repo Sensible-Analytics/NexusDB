@@ -21,3 +21,21 @@ export interface ChatMessage {
 }
 export const [chatMessages, setChatMessages] = createSignal<ChatMessage[]>([]);
 export const [isChatLoading, setIsChatLoading] = createSignal(false);
+
+export interface ChatContext {
+  lastQuery: string;
+  lastNql: string;
+  lastResultType: "overview" | "items" | "connections" | "count" | "relationships" | "most_connected" | "error";
+  lastEntityTypes?: string[];
+  lastItemCount?: number;
+  lastEdgeCount?: number;
+}
+export const [chatContext, setChatContext] = createSignal<ChatContext | null>(null);
+
+export interface QueryResult {
+  nql: string;
+  data: any | null;
+  nodes: number[];
+  edges: number[];
+}
+export const [lastQueryResult, setLastQueryResult] = createSignal<QueryResult | null>(null);

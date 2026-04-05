@@ -1,4 +1,4 @@
-import { Component, onMount, Show } from "solid-js";
+import { Component, createEffect, onMount, Show } from "solid-js";
 import Sidebar from "./components/sidebar/Sidebar";
 import DatabaseManager from "./components/database/DatabaseManager";
 import GraphView from "./components/graph/GraphView";
@@ -9,8 +9,10 @@ import NqlEditor from "./components/editor/NqlEditor";
 import HomeView from "./components/home/HomeView";
 import ChatView from "./components/chat/ChatView";
 import ReportView from "./components/report/ReportView";
-import { activeView, setActiveView, activeDb, nodes, edges, setDatabases, setActiveDb, setNodes, setEdges, setSchema } from "./stores/app";
+import GuidedTour, { isTourCompleted } from "./components/onboarding/GuidedTour";
+import { activeView, setActiveView, activeDb, nodes, edges, setDatabases, setActiveDb, setNodes, setEdges, setSchema, selectedNode, setSelectedNode } from "./stores/app";
 import { logError, dbList as apiDbList, nodeList, edgeList, schemaGet } from "./lib/api";
+import ErrorBoundaryComponent from "./components/ui/ErrorBoundary";
 import "./App.css";
 
 const loadDbData = async (dbName: string) => {
@@ -38,8 +40,48 @@ const App: Component = () => {
         await loadDbData(firstDb);
       }
     } catch (e) {
-      // No databases open yet, that's fine
     }
+
+    if (!isTourCompleted()) {
+      setTimeout(() => {
+        const tourEvent = new CustomEvent("show-tour");
+        window.dispatchEvent(tourEvent);
+      }, 1500);
+    }
+  });
+
+  createEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+
+      if (e.key === "1") setActiveView("home");
+      else if (e.key === "2") setActiveView("graph");
+      else if (e.key === "3") setActiveView("chat");
+      else if (e.key === "4") setActiveView("report");
+      else if (e.key === "5") setActiveView("nodes");
+      else if (e.key === "6") setActiveView("edges");
+      else if (e.key === "7") setActiveView("schema");
+      else if (e.key === "8") setActiveView("nql");
+      else if (e.key === "Escape") {
+        if (selectedNode()) setSelectedNode(null);
+        else setActiveView("home");
+      }
+      else if (e.key === "/" || (e.ctrlKey && e.key === "k")) {
+        e.preventDefault();
+        setActiveView("chat");
+      }
+      else if (e.ctrlKey && e.key === "g") {
+        e.preventDefault();
+        setActiveView("graph");
+      }
+      else if (e.ctrlKey && e.key === "r") {
+        e.preventDefault();
+        if (activeDb()) loadDbData(activeDb()!);
+      }
+    };
+
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
   });
 
   return (
@@ -73,28 +115,28 @@ const App: Component = () => {
         <Sidebar />
         <main class="main-content">
           <Show when={activeView() === "home"}>
-            <HomeView />
+            <ErrorBoundaryComponent><HomeView /></ErrorBoundaryComponent>
           </Show>
           <Show when={activeView() === "graph"}>
-            <GraphView />
+            <ErrorBoundaryComponent><GraphView /></ErrorBoundaryComponent>
           </Show>
           <Show when={activeView() === "chat"}>
-            <ChatView />
+            <ErrorBoundaryComponent><ChatView /></ErrorBoundaryComponent>
           </Show>
           <Show when={activeView() === "report"}>
-            <ReportView />
+            <ErrorBoundaryComponent><ReportView /></ErrorBoundaryComponent>
           </Show>
           <Show when={activeView() === "nodes"}>
-            <NodeList />
+            <ErrorBoundaryComponent><NodeList /></ErrorBoundaryComponent>
           </Show>
           <Show when={activeView() === "edges"}>
-            <EdgeList />
+            <ErrorBoundaryComponent><EdgeList /></ErrorBoundaryComponent>
           </Show>
           <Show when={activeView() === "schema"}>
-            <SchemaBrowser />
+            <ErrorBoundaryComponent><SchemaBrowser /></ErrorBoundaryComponent>
           </Show>
           <Show when={activeView() === "nql"}>
-            <NqlEditor />
+            <ErrorBoundaryComponent><NqlEditor /></ErrorBoundaryComponent>
           </Show>
         </main>
         <aside class="right-panel">
@@ -114,6 +156,8 @@ const App: Component = () => {
           <span>No database connected</span>
         </Show>
       </footer>
+
+      <GuidedTour />
     </div>
   );
 };

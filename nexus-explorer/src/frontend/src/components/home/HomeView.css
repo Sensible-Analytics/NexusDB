@@ -22,7 +22,44 @@
   color: var(--text-secondary);
   font-size: var(--text-lg);
   max-width: 600px;
-  margin: 0 auto;
+  margin: 0 auto var(--space-lg);
+}
+
+.welcome-actions {
+  display: flex;
+  gap: var(--space-md);
+  justify-content: center;
+  margin-top: var(--space-lg);
+}
+
+.welcome-btn {
+  padding: var(--space-sm) var(--space-xl);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.welcome-btn.primary {
+  background: var(--accent);
+  border: none;
+  color: white;
+}
+
+.welcome-btn.primary:hover {
+  background: var(--accent-hover);
+}
+
+.welcome-btn.secondary {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+}
+
+.welcome-btn.secondary:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
 }
 
 .stats-row {
@@ -199,4 +236,71 @@
   font-size: var(--text-sm);
   color: var(--text-secondary);
   line-height: 1.5;
+}
+
+.connect-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-xl);
+}
+
+.connect-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+
+.connect-icon {
+  font-size: 32px;
+}
+
+.connect-info {
+  flex: 1;
+}
+
+.connect-title {
+  font-size: var(--text-lg);
+  font-weight: 600;
+  margin-bottom: var(--space-xs);
+}
+
+.connect-desc {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+.connect-sources {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.connect-source {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+}
+
+.connect-source:hover {
+  background: var(--bg-hover);
+  border-color: var(--accent);
+  color: var(--text-primary);
+}
+
+.connect-source-icon {
+  font-size: var(--text-base);
+}
+
+.connect-source-label {
+  font-weight: 500;
 }

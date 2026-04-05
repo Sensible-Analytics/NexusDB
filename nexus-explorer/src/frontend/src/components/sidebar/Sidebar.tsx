@@ -1,6 +1,7 @@
-import { Component, For } from "solid-js";
+import { Component, For, createSignal, Show } from "solid-js";
 import { activeView, setActiveView, databases, activeDb, setActiveDb, setNodes, setEdges, setSchema } from "../../stores/app";
 import { nodeList, edgeList, schemaGet } from "../../lib/api";
+import ConnectionWizard from "../onboarding/ConnectionWizard";
 import "./Sidebar.css";
 
 interface NavItem {
@@ -8,23 +9,26 @@ interface NavItem {
   icon: string;
   label: string;
   tooltip: string;
+  shortcut?: string;
 }
 
 const navItems: NavItem[] = [
-  { id: "home", icon: "🏠", label: "Home", tooltip: "Overview and getting started" },
-  { id: "graph", icon: "🔗", label: "Graph", tooltip: "Visualize connections between items" },
-  { id: "chat", icon: "💬", label: "Chat", tooltip: "Ask questions about your data" },
-  { id: "report", icon: "📊", label: "Report", tooltip: "Generate summaries and insights" },
+  { id: "home", icon: "🏠", label: "Home", tooltip: "Overview and getting started", shortcut: "1" },
+  { id: "graph", icon: "🔗", label: "Graph", tooltip: "Visualize connections between items", shortcut: "2" },
+  { id: "chat", icon: "💬", label: "Chat", tooltip: "Ask questions about your data", shortcut: "3" },
+  { id: "report", icon: "📊", label: "Report", tooltip: "Generate summaries and insights", shortcut: "4" },
 ];
 
 const dataNavItems: NavItem[] = [
-  { id: "nodes", icon: "📦", label: "Items", tooltip: "Browse all items in your database" },
-  { id: "edges", icon: "🔀", label: "Connections", tooltip: "View relationships between items" },
-  { id: "schema", icon: "🏗️", label: "Structure", tooltip: "See how your data is organized" },
-  { id: "nql", icon: "⌨️", label: "NQL Editor", tooltip: "Write advanced queries" },
+  { id: "nodes", icon: "📦", label: "Items", tooltip: "Browse all items in your database", shortcut: "5" },
+  { id: "edges", icon: "🔀", label: "Connections", tooltip: "View relationships between items", shortcut: "6" },
+  { id: "schema", icon: "🏗️", label: "Structure", tooltip: "See how your data is organized", shortcut: "7" },
+  { id: "nql", icon: "⌨️", label: "NQL Editor", tooltip: "Write advanced queries", shortcut: "8" },
 ];
 
 const Sidebar: Component = () => {
+  const [isWizardOpen, setIsWizardOpen] = createSignal(false);
+
   const loadDbData = async (dbName: string) => {
     const nodes = await nodeList(dbName);
     setNodes(nodes);
@@ -55,6 +59,9 @@ const Sidebar: Component = () => {
             >
               <span class="nav-icon">{item.icon}</span>
               <span class="nav-label">{item.label}</span>
+              <Show when={item.shortcut}>
+                <span class="nav-shortcut">{item.shortcut}</span>
+              </Show>
             </button>
           )}
         </For>
@@ -73,6 +80,9 @@ const Sidebar: Component = () => {
             >
               <span class="nav-icon">{item.icon}</span>
               <span class="nav-label">{item.label}</span>
+              <Show when={item.shortcut}>
+                <span class="nav-shortcut">{item.shortcut}</span>
+              </Show>
             </button>
           )}
         </For>
@@ -82,6 +92,10 @@ const Sidebar: Component = () => {
 
       <div class="sidebar-section">
         <h3 class="sidebar-heading">Databases</h3>
+        <button class="connect-data-btn" onClick={() => setIsWizardOpen(true)}>
+          <span class="db-icon">➕</span>
+          <span class="db-name">Connect Data</span>
+        </button>
         <For each={databases()}>
           {(db) => (
             <button
@@ -95,6 +109,8 @@ const Sidebar: Component = () => {
           )}
         </For>
       </div>
+
+      <ConnectionWizard isOpen={isWizardOpen()} onClose={() => setIsWizardOpen(false)} onComplete={() => {}} />
     </nav>
   );
 };

@@ -156,3 +156,135 @@
   min-width: 80px;
   text-align: right;
 }
+
+.time-notice {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-left: 3px solid #f59e0b;
+  border-radius: var(--radius-md);
+  padding: var(--space-sm) var(--space-md);
+  margin-bottom: var(--space-lg);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+.connected-rank {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  font-weight: 600;
+  min-width: 20px;
+}
+
+.export-section,
+.share-section {
+  margin-bottom: var(--space-2xl);
+}
+
+.export-section h3,
+.share-section h3 {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  margin-bottom: var(--space-sm);
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.export-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.export-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid var(--border);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.export-btn:hover {
+  background: var(--bg-tertiary);
+  border-color: var(--border-hover);
+}
+
+.export-btn.primary {
+  background: #6366f1;
+  border-color: #6366f1;
+  color: white;
+}
+
+.export-btn.primary:hover {
+  background: #4f46e5;
+  border-color: #4f46e5;
+}
+
+.toast-notification {
+  position: fixed;
+  bottom: var(--space-xl);
+  right: var(--space-xl);
+  background: #10b981;
+  color: white;
+  padding: var(--space-sm) var(--space-lg);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  animation: toastIn 0.3s ease;
+}
+
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  .report-view,
+  .report-view * {
+    visibility: visible;
+  }
+
+  .report-view {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    padding: 20px;
+  }
+
+  .report-controls,
+  .time-notice,
+  .export-section,
+  .share-section,
+  .toast-notification {
+    display: none !important;
+  }
+
+  .metric-card {
+    border: 1px solid #ddd;
+    break-inside: avoid;
+  }
+
+  .report-section {
+    break-inside: avoid;
+  }
+}

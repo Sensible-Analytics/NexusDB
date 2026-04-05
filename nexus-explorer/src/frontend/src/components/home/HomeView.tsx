@@ -1,6 +1,9 @@
-import { Component, For } from "solid-js";
+import { Component, For, createSignal, Show } from "solid-js";
 import { setActiveView, setActiveDb, databases, nodes, edges, setNodes, setEdges, setSchema } from "../../stores/app";
 import { nodeList, edgeList, schemaGet } from "../../lib/api";
+import { showTour } from "../onboarding/GuidedTour";
+import ConnectionWizard from "../onboarding/ConnectionWizard";
+import { sourceOptions } from "../onboarding/ConnectionWizard";
 import "./HomeView.css";
 
 interface DemoCard {
@@ -43,6 +46,8 @@ const demoCards: DemoCard[] = [
 ];
 
 const HomeView: Component = () => {
+  const [isWizardOpen, setIsWizardOpen] = createSignal(false);
+
   const loadDb = async (dbId: string) => {
     setActiveDb(dbId);
     const n = await nodeList(dbId);
@@ -59,6 +64,10 @@ const HomeView: Component = () => {
     setActiveView("nql");
   };
 
+  const handleWizardComplete = (dbName: string) => {
+    loadDb(dbName);
+  };
+
   // Stats from current database
   const currentNodes = nodes().length;
   const currentEdges = edges().length;
@@ -72,6 +81,14 @@ const HomeView: Component = () => {
         <p class="welcome-subtitle">
           Explore your data through connections. Ask questions, find patterns, and generate insights — no database expertise required.
         </p>
+        <div class="welcome-actions">
+          <button class="welcome-btn primary" onClick={showTour}>
+            🎯 Take a Tour
+          </button>
+          <button class="welcome-btn secondary" onClick={() => setIsWizardOpen(true)}>
+            📁 Connect Your Data
+          </button>
+        </div>
       </div>
 
       {/* Quick stats */}
@@ -92,7 +109,32 @@ const HomeView: Component = () => {
         </div>
       )}
 
-      {/* Demo databases */}
+      <div class="section">
+        <h2 class="section-title">Connect Your Data</h2>
+        <p class="section-desc">
+          Import your data from various sources and let SensibleDB organize it into a knowledge graph.
+        </p>
+        <div class="connect-card">
+          <div class="connect-header">
+            <span class="connect-icon">🔗</span>
+            <div class="connect-info">
+              <h3 class="connect-title">Import your data</h3>
+              <p class="connect-desc">Drag & drop files, or connect a data source</p>
+            </div>
+          </div>
+          <div class="connect-sources">
+            <For each={sourceOptions}>
+              {(source) => (
+                <button class="connect-source" onClick={() => setIsWizardOpen(true)}>
+                  <span class="connect-source-icon">{source.icon}</span>
+                  <span class="connect-source-label">{source.label}</span>
+                </button>
+              )}
+            </For>
+          </div>
+        </div>
+      </div>
+
       <div class="section">
         <h2 class="section-title">Try a Demo Database</h2>
         <p class="section-desc">
@@ -153,6 +195,8 @@ const HomeView: Component = () => {
           </div>
         </div>
       </div>
+
+      <ConnectionWizard isOpen={isWizardOpen()} onClose={() => setIsWizardOpen(false)} onComplete={handleWizardComplete} />
     </div>
   );
 };
