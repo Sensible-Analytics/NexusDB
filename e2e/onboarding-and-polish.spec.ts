@@ -97,3 +97,60 @@ test.describe('Data Views', () => {
     await expect(page.locator('.schema-browser')).toBeVisible();
   });
 });
+
+test.describe('Data Flow', () => {
+  test('home view shows correct database name from mock', async ({ page }) => {
+    await page.goto('/');
+    await page.waitForTimeout(1000);
+    await expect(page.locator('text=health-patterns').first()).toBeVisible();
+  });
+
+  test('graph view renders correct number of node cards', async ({ page }) => {
+    await page.goto('/');
+    await page.getByRole('button', { name: 'Graph' }).first().click();
+    await page.waitForTimeout(2000);
+    const nodeCards = page.locator('.node-card');
+    const count = await nodeCards.count();
+    expect(count).toBe(10);
+  });
+
+  test('graph view renders correct number of edges', async ({ page }) => {
+    await page.goto('/');
+    await page.getByRole('button', { name: 'Graph' }).first().click();
+    await page.waitForTimeout(2000);
+    const edges = page.locator('.edge-line');
+    const count = await edges.count();
+    expect(count).toBe(10);
+  });
+
+  test('chat view shows correct item count in welcome message', async ({ page }) => {
+    await page.goto('/');
+    await page.getByRole('button', { name: 'Chat' }).first().click();
+    await page.waitForTimeout(1000);
+    await expect(page.locator('.chat-message.assistant').first()).toContainText('10');
+  });
+
+  test('report view shows correct metric values', async ({ page }) => {
+    await page.goto('/');
+    await page.getByRole('button', { name: 'Report' }).first().click();
+    await page.waitForTimeout(1000);
+    const metricValues = page.locator('.metric-value');
+    const firstValue = await metricValues.nth(0).textContent();
+    expect(firstValue?.trim()).toBe('10');
+    const secondValue = await metricValues.nth(1).textContent();
+    expect(secondValue?.trim()).toBe('10');
+  });
+
+  test('status bar shows correct item and connection counts', async ({ page }) => {
+    await page.goto('/');
+    await page.waitForTimeout(1000);
+    await expect(page.locator('text=10 items').first()).toBeVisible();
+    await expect(page.locator('text=10 connections').first()).toBeVisible();
+  });
+
+  test('sidebar displays correct database names', async ({ page }) => {
+    await page.goto('/');
+    await page.waitForTimeout(500);
+    await expect(page.locator('text=health-patterns').nth(0)).toBeVisible();
+  });
+});
