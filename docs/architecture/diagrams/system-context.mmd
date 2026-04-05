@@ -1,0 +1,53 @@
+---
+title: SensibleDB - System Context Diagram (C4 Level 1)
+---
+
+graph TB
+    subgraph External["External Systems"]
+        Developer["👤 Developer<br/>Writes NexusQL schemas & queries"]
+        AIApp["🤖 AI Application<br/>RAG, Agents, LLM Apps"]
+        MCPClient["🔧 MCP Client<br/>AI Agent Tool Discovery"]
+    end
+
+    subgraph SensibleDB["SensibleDB - Embedded Graph-Vector Database"]
+        CLI["SensibleDB CLI<br/>sensibledb-cli"]
+        Server["Nexus Server<br/>sensibledb-container"]
+        Engine["Core Engine<br/>sensibledb-db"]
+        Explorer["Nexus Explorer<br/>sensibledb-explorer"]
+    end
+
+    subgraph Storage["Storage Layer"]
+        LMDB["LMDB<br/>Storage Engine"]
+    end
+
+    subgraph SDKs["Client SDKs"]
+        TSSDK["TypeScript SDK<br/>nexus-ts"]
+        PySDK["Python SDK<br/>nexus-py"]
+    end
+
+    Developer -->|nexus init/check/push| CLI
+    CLI -->|deploys queries| Server
+    CLI -->|compiles via| Engine
+
+    AIApp -->|HTTP queries| TSSDK
+    AIApp -->|HTTP queries| PySDK
+    TSSDK -->|port 6969| Server
+    PySDK -->|port 6969| Server
+
+    Server -->|graph + vector ops| Engine
+    Engine -->|ACID transactions| LMDB
+
+    MCPClient -->|MCP protocol| Server
+    Server -->|tool discovery| Engine
+
+    Explorer -->|visual inspection| Server
+
+    classDef external fill:#e8e8e8,stroke:#666,stroke-width:2px
+    classDef nexus fill:#7289da,stroke:#4a69bd,stroke-width:2px,color:#fff
+    classDef storage fill:#b8e6b8,stroke:#2d8f2d,stroke-width:2px
+    classDef sdk fill:#f9d56e,stroke:#d4a017,stroke-width:2px
+
+    class Developer,AIApp,MCPClient external
+    class CLI,Server,Engine,Explorer nexus
+    class LMDB storage
+    class TSSDK,PySDK sdk

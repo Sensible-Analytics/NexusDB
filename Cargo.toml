@@ -1,0 +1,26 @@
+[workspace]
+members = [
+    "sensibledb-db",
+    "sensibledb-container",
+    "sensibledb-macros",
+    "sensibledb-cli",
+    "nql-tests",
+    "metrics",
+    "sensibledb-explorer",
+]
+resolver = "2"
+
+[profile.release]
+opt-level = 2
+codegen-units = 1
+lto = true
+panic = "abort"
+strip = "debuginfo"
+
+[profile.dev]
+opt-level = 0
+codegen-units = 256
+lto = false
+panic = "abort"
+incremental = true
+debug = 1

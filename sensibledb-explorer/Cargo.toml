@@ -1,0 +1,22 @@
+[package]
+name = "sensibledb-explorer"
+version = "0.1.0"
+edition = "2024"
+description = "Native macOS desktop explorer for SensibleDB"
+license = "AGPL-3.0"
+
+[dependencies]
+sensibledb-db = { path = "../sensibledb-db", features = ["full", "embedded"] }
+tauri = { version = "2", features = ["macos-private-api"] }
+tauri-plugin-store = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", features = ["full"] }
+tracing = "0.1"
+thiserror = "2"
+uuid = { version = "1", features = ["v6", "fast-rng"] }
+bumpalo = { version = "3.19.0", features = ["collections", "boxed", "serde"] }
+dirs = "6"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
