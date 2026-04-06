@@ -1,0 +1,12 @@
+# Seeds for failure cases proptest has generated in the past. It is
+# automatically read and these particular cases re-run before any
+# novel cases are generated.
+#
+# It is recommended to check this file in to source control so that
+# everyone who runs the test benefits from these saved cases.
+cc c0efecc41da364ee79f31dd3480c5093ad8817d9b06e8a359a54bd8c0d605373 # shrinks to nodes = [{  id:00000000-0000-0000-0000-000000000000, label:a }]
+cc c5da6a2d96a58b5402beedec613dc825b07571979194d15e0e64b87a10ca518a # shrinks to nodes = [{  id:00000000-0000-0000-0000-000000000000, label:_ }]
+cc 38e11bc0882363ca48da0aa22706102262ced1dcabe156cf513b51ef0a65c4a7 # shrinks to node = {  id:00000000-0000-0000-0000-000000000000, label:A }
+cc 6232ab032ab00ff8e07e0f70a05b14a8504b450e2cf42a6e4a7cb958cc17abf2 # shrinks to node = {  id:00000000-0000-0000-0000-000000000000, label:0 }
+cc 9afc1ec9a80494403194a9ddd2d5778cd791c0c083ba41d0880689b275a37807 # shrinks to edge = {  id: 00000000-0000-0000-0000-000000000000, label: a, from_node: 00000000-0000-0000-0000-000000000000, to_node: 00000000-0000-0000-0000-000000000000}
+cc 8a44628d062e88ad89cfb67a8d9608c692e1ec9523474c5ed23eb4fce1e8a686 # shrinks to edge = {  id: 00000000-0000-0000-0000-000000000000, label: A, from_node: 00000000-0000-0000-0000-000000000000, to_node: 00000000-0000-0000-0000-000000000000}

@@ -40,4 +40,14 @@ jobs:
     - name: Run tests
       run: |
         cd sensibledb-db
-        cargo test --release --lib -- --skip concurrency_tests
+        cargo test --release --lib
+    
+    - name: Run lincheck tests
+      run: |
+        cd sensibledb-db
+        cargo test --test lincheck_worker_pool --release
+    
+    - name: Run benchmarks (if bench feature enabled)
+      run: |
+        cd sensibledb-db
+        cargo bench --features bench

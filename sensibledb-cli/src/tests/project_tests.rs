@@ -1,5 +1,5 @@
 use crate::config::NexusConfig;
-use crate::project::{ProjectContext, get_nexus_cache_dir};
+use crate::project::{get_nexus_cache_dir, ProjectContext};
 use std::fs;
 use std::path::PathBuf;
 use tempfile::TempDir;
@@ -66,7 +66,10 @@ fn test_find_project_root_fails_without_config() {
     let project_path = temp_dir.path().to_path_buf();
 
     let result = ProjectContext::find_and_load(Some(&project_path));
-    assert!(result.is_err(), "Should fail when no sensibledb.toml exists");
+    assert!(
+        result.is_err(),
+        "Should fail when no sensibledb.toml exists"
+    );
     let error_msg = result.err().unwrap().to_string();
     assert!(
         error_msg.contains("not found"),
@@ -105,7 +108,7 @@ fn test_project_context_find_and_load() {
 
     let context = result.unwrap();
     assert_eq!(context.root, project_path);
-    assert_eq!(context.sensibledb_dir, project_path.join(".sensibledb"));
+    assert_eq!(context.nexus_dir, project_path.join(".sensibledb"));
 }
 
 #[test]
@@ -153,7 +156,10 @@ fn test_project_context_dockerfile_path() {
     let context = ProjectContext::find_and_load(Some(&project_path)).unwrap();
 
     let dockerfile_path = context.dockerfile_path("dev");
-    assert_eq!(dockerfile_path, project_path.join(".sensibledb/dev/Dockerfile"));
+    assert_eq!(
+        dockerfile_path,
+        project_path.join(".sensibledb/dev/Dockerfile")
+    );
 }
 
 #[test]
