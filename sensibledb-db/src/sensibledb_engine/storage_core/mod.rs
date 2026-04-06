@@ -8,6 +8,8 @@ pub mod version_info;
 mod storage_concurrent_tests;
 #[cfg(test)]
 mod storage_migration_tests;
+#[cfg(test)]
+mod property_based_tests;
 
 use crate::{
     sensibledb_engine::{

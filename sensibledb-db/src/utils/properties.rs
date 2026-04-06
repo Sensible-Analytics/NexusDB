@@ -22,13 +22,24 @@ use crate::protocol::value::Value;
 ///     - All required space is allocated in the arena upfront
 ///     - Key lengths are stored packed for SIMD length check on get.
 ///     - Small n means O(n) is faster than O(1)
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub struct ImmutablePropertiesMap<'arena> {
     len: usize,
     key_lengths: *const usize,
     key_datas: *const *const u8,
     values: *const Value,
     _phantom: marker::PhantomData<(&'arena str, &'arena Value)>,
+}
+
+impl<'arena> PartialEq for ImmutablePropertiesMap<'arena> {
+    fn eq(&self, other: &Self) -> bool {
+        if self.len != other.len {
+            return false;
+        }
+        self.iter()
+            .zip(other.iter())
+            .all(|((k1, v1), (k2, v2))| k1 == k2 && v1 == v2)
+    }
 }
 
 impl<'arena> ImmutablePropertiesMap<'arena> {

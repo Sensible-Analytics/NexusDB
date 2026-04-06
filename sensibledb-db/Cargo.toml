@@ -69,6 +69,7 @@ num_cpus = "1.17"     # TODO: write ourselves
 proptest = "1.4"
 criterion = "0.5"
 loom = "0.7"          # Concurrency model checking
+lincheck = "0.2.1"      # Linearizability testing
 tokio-test = "0.4"    # Tokio testing utilities
 serial_test = "3.2"   # Serialize LMDB stress tests to avoid interference
 

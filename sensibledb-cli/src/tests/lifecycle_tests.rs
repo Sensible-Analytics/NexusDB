@@ -298,13 +298,22 @@ async fn test_status_with_multiple_instances() {
 #[tokio::test]
 async fn test_delete_fails_with_nonexistent_instance_dev() {
     use crate::commands::delete;
+    use crate::config::{BuildMode, DbConfig, LocalInstanceConfig};
 
     let ctx = TestContext::new();
 
-    // Create sensibledb.toml but clear all instances - this prevents the test from
-    // walking up directories and finding another test's sensibledb.toml
+    // Create a valid config with a "staging" instance (not "dev")
+    // This prevents walking up directories and finding another test's sensibledb.toml
     let mut config = NexusConfig::default_config("test-project");
-    config.local.clear(); // Remove the default "dev" instance
+    config.local.clear();
+    config.local.insert(
+        "staging".to_string(),
+        LocalInstanceConfig {
+            port: Some(6970),
+            build_mode: BuildMode::Dev,
+            db_config: DbConfig::default(),
+        },
+    );
     config
         .save_to_file(&ctx.project_path.join("sensibledb.toml"))
         .expect("Failed to save config");

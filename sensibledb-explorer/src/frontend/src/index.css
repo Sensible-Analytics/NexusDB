@@ -1,19 +1,19 @@
 :root {
   /* Colors */
-  --bg-primary: var(--accent)ffffff;
-  --bg-secondary: var(--accent)f8fafc;
-  --bg-tertiary: var(--accent)f1f5f9;
-  --bg-hover: var(--accent)e2e8f0;
-  --text-primary: var(--accent)0f172a;
-  --text-secondary: var(--accent)475569;
-  --text-muted: var(--accent)94a3b8;
-  --accent: var(--accent)6366f1;
-  --accent-hover: var(--accent)4f46e5;
-  --success: var(--accent)22c55e;
-  --danger: var(--accent)ef4444;
-  --warning: var(--accent)f59e0b;
-  --border: var(--accent)e2e8f0;
-  --border-light: var(--accent)cbd5e1;
+  --bg-primary: #0f172a;
+  --bg-secondary: #f8fafc;
+  --bg-tertiary: #f1f5f9;
+  --bg-hover: #e2e8f0;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+  --accent: #3b82f6;
+  --accent-hover: #4f46e5;
+  --success: #22c55e;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --border: #e2e8f0;
+  --border-light: #cbd5e1;
 
   /* Spacing */
   --space-xs: 4px;

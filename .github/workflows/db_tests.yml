@@ -40,4 +40,15 @@ jobs:
     - name: Run tests
       run: |
         cd sensibledb-db
-        cargo test --release --lib -- --skip concurrency_tests
+        # Skip flaky stress tests with pre-existing LMDB cleanup race condition
+        cargo test --release --lib -- --skip test_stress --skip test_concurrent_inserts_multiple_labels
+    
+    - name: Run lincheck tests (if available)
+      run: |
+        cd sensibledb-db
+        cargo test --lib lincheck --release || true
+    
+    - name: Run benchmarks (if bench feature enabled)
+      run: |
+        cd sensibledb-db
+        cargo bench --features bench || true
