@@ -43,10 +43,10 @@ jobs:
             ${{ runner.os }}-cargo-
 
       - name: Make run.sh executable
-        run: chmod +x ./hql-tests/run.sh
+        run: chmod +x ./sensibleql-tests/run.sh
 
       - name: Run HQL tests
-        working-directory: ./hql-tests
+        working-directory: ./sensibleql-tests
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_OWNER: ${{ github.repository_owner }}
