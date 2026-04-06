@@ -604,9 +604,11 @@ async fn process_test_directory(
     let cargo_toml_src = temp_repo.join("Cargo.toml");
     let cargo_toml_dst = sensibledb_db_dir.join("Cargo.toml");
     if cargo_toml_src.exists() {
-        // Read the Cargo.toml and remove sensibleql-tests from workspace members
+        // Read the Cargo.toml and remove sensibleql-tests and sensibledb-explorer from workspace members
         let cargo_content = fs::read_to_string(&cargo_toml_src).await?;
-        let modified_content = cargo_content.replace("    \"sensibleql-tests\",\n", "");
+        let modified_content = cargo_content
+            .replace("    \"sensibleql-tests\",\n", "")
+            .replace("    \"sensibledb-explorer\",\n", "");
         fs::write(&cargo_toml_dst, modified_content).await?;
     }
 
