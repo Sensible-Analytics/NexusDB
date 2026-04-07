@@ -14,11 +14,11 @@ A step-by-step guide to get started with SensibleDB Explorer — your personal k
 3. Download the `.dmg` file
 4. Open the `.dmg` file
 5. Drag "SensibleDB Explorer" to your Applications folder
-6. Open the app from Applications
+6. **Important**: Right-click the app in Applications and select "Open" to bypass Gatekeeper (the app is not signed yet)
 
 ## Step 2: Add Your Documents
 
-![SensibleDB Explorer Home](assets/explorer-home.png)
+![SensibleDB Explorer Home](../assets/explorer-home.png)
 
 When you first open the app, you'll see the home screen. Follow these steps:
 
@@ -36,7 +36,7 @@ SensibleDB Explorer can process:
 
 ## Step 3: Wait for Processing
 
-![SensibleDB Explorer Graph View](assets/explorer-graph.png)
+![SensibleDB Explorer Graph View](../assets/explorer-graph.png)
 
 After adding a folder, the app will:
 1. Scan all documents in the folder
@@ -48,7 +48,7 @@ This may take a few minutes depending on folder size. You'll see progress in the
 
 ## Step 4: Chat with Your Documents
 
-![SensibleDB Explorer Chat](assets/explorer-chat.png)
+![SensibleDB Explorer Chat](../assets/explorer-chat.png)
 
 Now you can ask questions about your documents!
 
@@ -61,7 +61,7 @@ Now you can ask questions about your documents!
 
 ## Step 5: Explore Your Knowledge Graph
 
-![SensibleDB Explorer Report View](assets/explorer-report.png)
+![SensibleDB Explorer Report View](../assets/explorer-report.png)
 
 The graph view shows connections between concepts across your documents. You can:
 - Click on nodes to see related information
@@ -74,7 +74,39 @@ The graph view shows connections between concepts across your documents. You can
 2. **Be patient** — First-time indexing takes time
 3. **Ask specific questions** — "What did John say about X?" works better than vague queries
 
-## Offline and Private
+## About App Signing
+
+⚠️ **Note**: The app is currently not signed by Apple, which is why you need to right-click > Open.
+
+### Why Is It Not Signed?
+
+Full code signing requires an **Apple Developer Program membership** ($99/year). We're working on securing proper signing.
+
+### Workaround: How to Open the Unsigned App
+
+1. **Right-click** on "SensibleDB Explorer" in Applications
+2. Select **"Open"**
+3. Click **"Open"** again in the dialog box
+4. The app will now launch!
+
+This is a one-time step. After first opening, the app will work normally.
+
+### Alternatives We're Exploring
+
+We researched alternatives to paid Apple Developer account:
+
+| Option | Status |
+|--------|--------|
+| Ad-hoc signing | ❌ Doesn't pass Gatekeeper on modern Macs |
+| Free Apple Developer | ❌ No signing certificates |
+| Third-party services | Requires trust + still costs |
+| Homebrew | ❌ Requires signed apps |
+
+The only reliable solution is **Apple Developer Program** ($99/year) for Developer ID + notarization. This is an industry requirement for all macOS apps distributed outside the App Store.
+
+For now, the **right-click > Open** workaround works perfectly!
+
+## Privacy
 
 ✅ **100% Local-First**: All your data stays on your computer
 ✅ **Works Offline**: No internet required after installation
