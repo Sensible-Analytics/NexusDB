@@ -7,25 +7,36 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "tauri": "tauri"
+    "tauri": "tauri",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
-    "@tauri-apps/api": "^2",
-    "@tauri-apps/plugin-store": "^2",
-    "solid-js": "^1.9",
-    "force-graph": "^1.47",
-    "codemirror": "^6.0",
     "@codemirror/lang-javascript": "^6.2",
     "@codemirror/language": "^6.10",
     "@codemirror/state": "^6.4",
     "@codemirror/view": "^6.28",
-    "@lezer/highlight": "^1.2"
+    "@lezer/highlight": "^1.2",
+    "@tauri-apps/api": "^2",
+    "@tauri-apps/plugin-store": "^2",
+    "codemirror": "^6.0",
+    "force-graph": "^1.47",
+    "solid-js": "^1.9"
   },
   "devDependencies": {
+    "@solidjs/testing-library": "^0.8.10",
     "@tauri-apps/cli": "^2",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/node": "^22",
+    "@vitest/coverage-v8": "^4.1.2",
+    "happy-dom": "^20.8.9",
+    "jsdom": "^29.0.1",
+    "typescript": "^5.6",
     "vite": "^6",
     "vite-plugin-solid": "^2.10",
-    "typescript": "^5.6",
-    "@types/node": "^22"
+    "vitest": "^4.1.2"
   }
 }

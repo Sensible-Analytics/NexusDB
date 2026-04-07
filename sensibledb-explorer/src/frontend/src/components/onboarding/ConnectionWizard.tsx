@@ -1,4 +1,5 @@
 import { Component, createSignal, Show, For } from "solid-js";
+import { invoke } from "@tauri-apps/api/core";
 import { dbCreate, dbOpen } from "../../lib/api";
 import { setActiveDb, setDatabases, databases } from "../../stores/app";
 import "./ConnectionWizard.css";
@@ -121,29 +122,95 @@ const ConnectionWizard: Component<ConnectionWizardProps> = (props) => {
     setSelectedFiles([...files.slice(0, index), ...files.slice(index + 1)]);
   };
 
+  const detectFileType = (filename: string): string => {
+    const ext = filename.split(".").pop()?.toLowerCase();
+    switch (ext) {
+      case "csv": return "csv";
+      case "json": return "json";
+      case "md": return "markdown";
+      case "txt": return "text";
+      default: return "text";
+    }
+  };
+
+  const readFileContent = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = () => reject(new Error(`Failed to read file: ${file.name}`));
+      reader.readAsText(file);
+    });
+  };
+
   const startProcessing = async () => {
     setIsProcessing(true);
     setStep(4);
     setProcessingProgress(0);
     setProcessingSteps([]);
+    setError(null);
 
     const steps_list = [
-      "Extracting entities...",
-      "Finding relationships...",
-      "Creating connections...",
-      "Building search index...",
+      "Reading file...",
+      "Chunking document...",
+      "Generating embeddings...",
+      "Building graph...",
+      "Import complete!",
     ];
 
     const name = dbName() || `imported-${Date.now()}`;
-
-    for (let i = 0; i < steps_list.length; i++) {
-      setProcessingSteps(steps_list.slice(0, i + 1));
-      setProcessingProgress(((i + 1) / steps_list.length) * 100);
-      await new Promise((r) => setTimeout(r, 800));
-    }
+    const files = selectedFiles();
 
     try {
       await dbCreate(name, "local");
+
+      for (let i = 0; i < steps_list.length - 1; i++) {
+        setProcessingSteps(steps_list.slice(0, i + 1));
+        setProcessingProgress(((i + 1) / steps_list.length) * 100);
+
+        if (i === 0) {
+          for (let fileIdx = 0; fileIdx < files.length; fileIdx++) {
+            const file = files[fileIdx];
+            const fileType = detectFileType(file.name);
+            const content = await readFileContent(file);
+            
+            const chunkResult = await invoke<{ chunks: string[] }>("chunk_text", {
+              content,
+              fileType,
+            });
+            
+            const chunkContents = chunkResult.chunks;
+            
+            setProcessingSteps(["Reading file...", "Chunking document..."]);
+            setProcessingProgress((2 / steps_list.length) * 100);
+            
+            const embedResult = await invoke<{ embeddings: number[][] }>("generate_embeddings", {
+              request: {
+                model: "nomic-embed-text",
+                texts: chunkContents,
+              },
+              ollamaUrl: null,
+            });
+            
+            setProcessingSteps(["Reading file...", "Chunking document...", "Generating embeddings..."]);
+            setProcessingProgress((3 / steps_list.length) * 100);
+
+            await invoke("extract_entities_from_chunks", {
+              chunks: chunkContents,
+              embeddings: embedResult.embeddings,
+              dbName: name,
+            });
+            
+            setProcessingSteps(["Reading file...", "Chunking document...", "Generating embeddings...", "Building graph..."]);
+            setProcessingProgress((4 / steps_list.length) * 100);
+          }
+        }
+
+        await new Promise((r) => setTimeout(r, 100));
+      }
+
+      setProcessingSteps(["Reading file...", "Chunking document...", "Generating embeddings...", "Building graph...", "Import complete!"]);
+      setProcessingProgress(100);
+
       await dbOpen(name, "local");
       const currentDbs = databases();
       if (!currentDbs.includes(name)) {
@@ -321,7 +388,7 @@ const ConnectionWizard: Component<ConnectionWizardProps> = (props) => {
                   </div>
                   <span class="progress-text">{Math.round(processingProgress())}%</span>
                   <ul class="processing-checklist">
-                    <For each={["Extracting entities...", "Finding relationships...", "Creating connections...", "Building search index..."]}>
+                    <For each={["Reading file...", "Chunking document...", "Generating embeddings...", "Building graph...", "Import complete!"]}>
                       {(s) => (
                         <li classList={{ done: processingSteps().includes(s), active: processingSteps()[processingSteps().length - 1] === s }}>
                           <span class="check-icon">{processingSteps().includes(s) ? "✓" : "○"}</span>
