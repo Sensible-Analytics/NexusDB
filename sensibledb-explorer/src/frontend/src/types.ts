@@ -42,3 +42,60 @@ export interface GraphEdge {
   target: number;
   label: string;
 }
+
+export interface OllamaModelInfo {
+  name: string;
+  size: number;
+  digest: string;
+  modified_at: string;
+}
+
+export interface OllamaStatus {
+  available: boolean;
+  url: string;
+  version: string | null;
+  models: OllamaModelInfo[];
+}
+
+export interface PullProgressResult {
+  status: string;
+  percent: number;
+}
+
+export interface EmbeddingRequest {
+  model: string;
+  texts: string[];
+}
+
+export interface EmbeddingResult {
+  embeddings: number[][];
+}
+
+export interface NLToSensibleQLRequest {
+  query: string;
+  schema_info: string | null;
+  db_name: string;
+}
+
+export interface NLToSensibleQLResult {
+  sensibleql: string;
+  explanation: string;
+}
+
+export interface DocumentChunk {
+  id: string;
+  content: string;
+  metadata: Record<string, unknown>;
+}
+
+export interface ExtractedEntity {
+  subject: string;
+  predicate: string;
+  object: string;
+}
+
+export interface IngestionResult {
+  chunk_count: number;
+  entity_count: number;
+  document_id: string;
+}

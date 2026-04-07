@@ -18,5 +18,20 @@ uuid = { version = "1", features = ["v6", "fast-rng"] }
 bumpalo = { version = "3.19.0", features = ["collections", "boxed", "serde"] }
 dirs = "6"
 
+# Ollama client & HTTP
+reqwest = { version = "0.12", features = ["json", "stream"] }
+
+# Document parsing
+kreuzberg = "4"
+
+# File hashing for change detection
+sha2 = "0.10"
+
+# File watching
+notify = "7"
+
+# Progress streaming
+futures-util = "0.3"
+
 [build-dependencies]
 tauri-build = { version = "2", features = [] }

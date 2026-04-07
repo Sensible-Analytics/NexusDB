@@ -1,4 +1,5 @@
 import { Component, createSignal, createEffect, For, onMount, Show } from "solid-js";
+import { invoke } from "@tauri-apps/api/core";
 import { activeDb, nodes, edges, schema, setActiveView, setChatContext, setLastQueryResult } from "../../stores/app";
 import type { SchemaInfo } from "../../types";
 import { sensibleqlExecute } from "../../lib/api";
@@ -13,6 +14,7 @@ interface Message {
   queryType?: string;
   followUps?: string[];
   structuredData?: StructuredResponse;
+  explanation?: string;
 }
 
 interface StructuredResponse {
@@ -122,6 +124,33 @@ export function translateNLtoSensibleQL(input: string, schemaInfo: SchemaInfo | 
   return { sensibleql: input, queryType: "raw" };
 }
 
+async function translateNLtoSensibleQLWithLLM(
+  query: string,
+  schemaInfo: SchemaInfo | null,
+  activeDb: string
+): Promise<{ sensibleql: string; queryType: string; explanation?: string }> {
+  try {
+    const result = await invoke<{ sensibleql: string; explanation?: string }>("translate_nl_to_sensibleql", {
+      request: {
+        query,
+        schema_info: schemaInfo ? JSON.stringify(schemaInfo) : null,
+        db_name: activeDb,
+      },
+      model: null,
+      ollamaUrl: null,
+    });
+
+    return {
+      sensibleql: result.sensibleql,
+      queryType: "llm",
+      explanation: result.explanation,
+    };
+  } catch (e) {
+    console.warn("LLM translation failed, falling back to regex:", e);
+    return translateNLtoSensibleQL(query, schemaInfo);
+  }
+}
+
 function generateStructuredResponse(queryType: string, result: any, schemaInfo: SchemaInfo | null): StructuredResponse | null {
   const nodes = result?.data?.nodes || [];
   const edgeCount = result?.data?.edges?.length || 0;
@@ -207,6 +236,7 @@ const ChatView: Component = () => {
   const [messages, setMessages] = createSignal<Message[]>([]);
   const [input, setInput] = createSignal("");
   const [isLoading, setIsLoading] = createSignal(false);
+  const [isLlmProcessing, setIsLlmProcessing] = createSignal(false);
   const [expandedNql, setExpandedNql] = createSignal<Set<number>>(new Set());
   let messagesEnd: HTMLDivElement | undefined;
 
@@ -240,7 +270,17 @@ const ChatView: Component = () => {
     setInput("");
 
     const schemaInfo = schema();
-    const { sensibleql, queryType } = translateNLtoSensibleQL(query, schemaInfo);
+    const dbName = activeDb()!;
+    
+    setIsLlmProcessing(true);
+    let translation: { sensibleql: string; queryType: string; explanation?: string };
+    try {
+      translation = await translateNLtoSensibleQLWithLLM(query, schemaInfo, dbName);
+    } finally {
+      setIsLlmProcessing(false);
+    }
+
+    const { sensibleql, queryType, explanation } = translation;
 
     const result = await executeQuery(sensibleql);
 
@@ -275,6 +315,7 @@ const ChatView: Component = () => {
       queryType,
       followUps,
       structuredData: structuredData || undefined,
+      explanation,
     };
     setMessages(prev => [...prev, assistantMsg]);
 
@@ -411,8 +452,15 @@ const ChatView: Component = () => {
                       {expandedNql().has(index()) ? "▾" : "▸"} How did I get this?
                     </button>
                     <Show when={expandedNql().has(index())}>
-                      <div class="sensibleql-code">
-                        <code>{msg.sensibleql}</code>
+                      <div class="sensibleql-explanation">
+                        <Show when={msg.explanation}>
+                          <p class="explanation-text">
+                            <span class="explanation-badge">LLM</span> {msg.explanation}
+                          </p>
+                        </Show>
+                        <div class="sensibleql-code">
+                          <code>{msg.sensibleql}</code>
+                        </div>
                       </div>
                     </Show>
                   </div>

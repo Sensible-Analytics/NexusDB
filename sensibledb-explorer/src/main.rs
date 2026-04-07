@@ -1,6 +1,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 mod commands;
+mod ollama;
 
 use sensibledb_db::embedded::database::Database;
 use std::collections::HashMap;
@@ -43,6 +44,13 @@ fn main() {
             commands::edge_list,
             commands::schema_get,
             commands::sensibleql_execute,
+            commands::ollama_check_status,
+            commands::ollama_pull_model,
+            commands::generate_embeddings,
+            commands::translate_nl_to_sensibleql,
+            commands::ingest_document,
+            commands::chunk_text,
+            commands::extract_entities_from_chunks,
         ])
         .run(tauri::generate_context!())
         .expect("error while running SensibleDB Explorer");

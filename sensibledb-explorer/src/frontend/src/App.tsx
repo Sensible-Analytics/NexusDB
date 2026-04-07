@@ -9,6 +9,7 @@ import SensibleQLEditor from "./components/editor/SensibleQLEditor";
 import HomeView from "./components/home/HomeView";
 import ChatView from "./components/chat/ChatView";
 import ReportView from "./components/report/ReportView";
+import ModelSettings from "./components/settings/ModelSettings";
 import GuidedTour, { isTourCompleted } from "./components/onboarding/GuidedTour";
 import { activeView, setActiveView, activeDb, nodes, edges, setDatabases, setActiveDb, setNodes, setEdges, setSchema, selectedNode, setSelectedNode } from "./stores/app";
 import { logError, dbList as apiDbList, nodeList, edgeList, schemaGet } from "./lib/api";
@@ -62,6 +63,8 @@ const App: Component = () => {
       else if (e.key === "6") setActiveView("edges");
       else if (e.key === "7") setActiveView("schema");
       else if (e.key === "8") setActiveView("sensibleql");
+      else if (e.key === "9") setActiveView("models");
+      else if (e.key === "9") setActiveView("models");
       else if (e.key === "Escape") {
         if (selectedNode()) setSelectedNode(null);
         else setActiveView("home");
@@ -137,6 +140,12 @@ const App: Component = () => {
           </Show>
           <Show when={activeView() === "sensibleql"}>
             <ErrorBoundaryComponent><SensibleQLEditor /></ErrorBoundaryComponent>
+          </Show>
+          <Show when={activeView() === "models"}>
+            <ErrorBoundaryComponent><ModelSettings /></ErrorBoundaryComponent>
+          </Show>
+          <Show when={activeView() === "models"}>
+            <ErrorBoundaryComponent><ModelSettings /></ErrorBoundaryComponent>
           </Show>
         </main>
         <aside class="right-panel">

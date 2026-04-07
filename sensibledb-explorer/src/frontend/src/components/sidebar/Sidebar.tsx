@@ -26,6 +26,10 @@ const dataNavItems: NavItem[] = [
   { id: "sensibleql", icon: "⌨️", label: "SensibleQL Editor", tooltip: "Write advanced queries", shortcut: "8" },
 ];
 
+const aiNavItems: NavItem[] = [
+  { id: "models", icon: "🧠", label: "AI Models", tooltip: "Manage on-device AI models", shortcut: "9" },
+];
+
 const Sidebar: Component = () => {
   const [isWizardOpen, setIsWizardOpen] = createSignal(false);
 
@@ -72,6 +76,48 @@ const Sidebar: Component = () => {
       <div class="sidebar-section">
         <h3 class="sidebar-heading">Data</h3>
         <For each={dataNavItems}>
+          {(item) => (
+            <button
+              classList={{ "nav-item": true, active: activeView() === item.id }}
+              onClick={() => handleNavClick(item.id)}
+              title={item.tooltip}
+            >
+              <span class="nav-icon">{item.icon}</span>
+              <span class="nav-label">{item.label}</span>
+              <Show when={item.shortcut}>
+                <span class="nav-shortcut">{item.shortcut}</span>
+              </Show>
+            </button>
+          )}
+        </For>
+      </div>
+
+      <div class="sidebar-divider" />
+
+      <div class="sidebar-section">
+        <h3 class="sidebar-heading">AI</h3>
+        <For each={aiNavItems}>
+          {(item) => (
+            <button
+              classList={{ "nav-item": true, active: activeView() === item.id }}
+              onClick={() => handleNavClick(item.id)}
+              title={item.tooltip}
+            >
+              <span class="nav-icon">{item.icon}</span>
+              <span class="nav-label">{item.label}</span>
+              <Show when={item.shortcut}>
+                <span class="nav-shortcut">{item.shortcut}</span>
+              </Show>
+            </button>
+          )}
+        </For>
+      </div>
+
+      <div class="sidebar-divider" />
+
+      <div class="sidebar-section">
+        <h3 class="sidebar-heading">AI</h3>
+        <For each={aiNavItems}>
           {(item) => (
             <button
               classList={{ "nav-item": true, active: activeView() === item.id }}
