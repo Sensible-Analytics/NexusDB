@@ -6,8 +6,8 @@ repo_name: Sensible-Analytics/SensibleDB
 
 theme:
   name: material
-  logo: assets/full_logo.png
-  favicon: assets/full_logo.png
+  logo: assets/sensible-db-logo.svg
+  favicon: assets/sensible-db-logo.svg
   palette:
     - scheme: default
       primary: black
