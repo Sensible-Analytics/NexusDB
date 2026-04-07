@@ -1,12 +1,12 @@
 # Features Overview
 
-## Built-in MCP Tools
+## Local-First Architecture
 
-AI agents can discover data and walk the graph autonomously.
+All data stays on your machine. No external calls, no cloud dependencies, works completely offline.
 
 ## Built-in Embeddings
 
-Use Embed() directly in queries - no external service needed.
+Use `Embed()` directly in queries — no external embedding service needed.
 
 ## RAG Tooling
 
@@ -26,5 +26,9 @@ Compile-time validation catches errors before production.
 
 ## Multi-Model
 
-Graph, vector, KV, document, and relational - all in one database.
+Graph, vector, KV, document, and relational — all in one database.
+
+## MCP Server *(Coming Soon)*
+
+Connect AI agents directly via MCP (Model Context Protocol) for agent memory and knowledge base use cases.
 
