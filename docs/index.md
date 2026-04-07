@@ -8,41 +8,54 @@ Built in Rust with LMDB as its storage engine — like SQLite for knowledge grap
 
 ---
 
-## Why SensibleDB?
+## Choose Your Path
 
-| Before SensibleDB | With SensibleDB |
+| I want to... | Start here |
 |---|---|
-| PostgreSQL for app data | **One database** handles everything |
-| Pinecone / Weaviate for vectors | Graph + vector + embedded in a single engine |
-| Neo4j for graph relationships | Type-safe queries with compile-time validation |
-| Custom auth & access layers | Secure by default — access only through compiled SensibleQL |
-
-## Key Features
-
-- **Built-in MCP Tools** — AI agents discover data and walk the graph instead of generating SQL
-- **Built-in Embeddings** — Vectorize text directly in queries with `Embed()`
-- **RAG Tooling** — Vector search, keyword search, and graph traversals out of the box
-- **Secure by Default** — Private by default; access only through compiled SensibleQL queries
-- **Ultra-Low Latency** — Rust + LMDB storage engine for extreme performance
-- **Type-Safe Queries** — SensibleQL is 100% type-safe, catch errors at compile time
-- **Embedded Mode** — Zero external dependencies, use directly in Rust applications
-- **Visual Explorer** — Interactive graph visualization, natural language chat, and report generation
+| **Organize my personal documents** and search through them using AI | [SensibleDB Explorer](#explorer-quick-start) — Desktop app for non-technical users |
+| **Build AI applications** with a knowledge base | [CLI Quick Start](#cli-quick-start) — For developers |
+| **Store memory for AI agents** | [Embedded Mode](#embedded-quick-start) — For Rust developers |
 
 ---
 
-## Quick Start
+<a id="explorer-quick-start"></a>
+## SensibleDB Explorer — Your Personal Knowledge App
 
-### 1. Install the CLI
+*For non-technical users who want to organize and search their personal documents.*
+
+### Why SensibleDB Explorer?
+
+- **100% Local-First** — Your documents never leave your computer. No cloud, nothing sent externally.
+- **Works Offline** — Disconnect your internet and keep using the app.
+- **Chat with Your Documents** — Ask questions in plain English, get answers from your files.
+
+### Get Started
+
+1. Download SensibleDB Explorer for macOS
+2. Launch the app
+3. Click "Add Folder" → select your documents folder
+4. Start chatting!
+
+---
+
+<a id="cli-quick-start"></a>
+## CLI Quick Start — For Developers
+
+### 1. Install the CLI (build from source)
 
 ```bash
-curl -sSL "https://install.sensibledb-db.com" | bash
+git clone https://github.com/Sensible-Analytics/SensibleDB.git
+cd SensibleDB
+cargo install --path sensibledb-cli
 ```
+
+> **Note**: The install script is temporarily unavailable. Use source build above.
 
 ### 2. Initialize a Project
 
 ```bash
 mkdir my-project && cd my-project
-sensibledb init
+nexus init
 ```
 
 ### 3. Write Your Schema & Queries
@@ -73,38 +86,49 @@ QUERY getFriends(user_id: U64) =>
 ### 4. Deploy
 
 ```bash
-sensibledb push dev
+nexus push dev
 ```
 
 ### 5. Use in Your Application
 
-**TypeScript:**
+**TypeScript (use HTTP directly):**
 
 ```typescript
-import SensibleDB from "sensible-ts";
-
-const client = new SensibleDB();
-
-// Create a user
-await client.query("addUser", { name: "John", age: 30 });
-
-// Query with type safety
-const user = await client.query("getUser", { user_name: "John" });
+// SDK coming soon - use HTTP for now
+const response = await fetch("http://localhost:6969/getUser", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ user_name: "John" })
+});
+const user = await response.json();
 ```
 
-**Python:**
+**Python (use requests directly):**
 
 ```python
-from sensibledb import SensibleDB
+import requests
 
-client = SensibleDB()
-
-# Query the database
-user = client.query("getUser", user_name="John")
+response = requests.post(
+    "http://localhost:6969/getUser",
+    json={"user_name": "John"}
+)
+user = response.json()
 print(user)
 ```
 
-**Rust (Embedded):**
+> **Note**: TypeScript and Python SDKs are in development. Track progress on [GitHub](https://github.com/Sensible-Analytics/SensibleDB/issues).
+
+---
+
+<a id="embedded-quick-start"></a>
+## Embedded Mode — For Rust Developers
+
+For full control, embed SensibleDB directly in your application:
+
+```toml
+[dependencies]
+sensibledb-db = { version = "1.3", features = ["embedded"] }
+```
 
 ```rust
 use sensibledb_db::embedded::{Database, Node};
@@ -122,15 +146,28 @@ tx.commit()?;
 
 ---
 
+## Key Features
+
+- **100% Local-First** — Runs entirely on your machine, no external calls
+- **Built-in Embeddings** — Vectorize text directly in queries with `Embed()`
+- **RAG Tooling** — Vector search, keyword search, and graph traversals out of the box
+- **Secure by Default** — Private by default; access only through compiled SensibleQL queries
+- **Ultra-Low Latency** — Rust + LMDB storage engine for extreme performance
+- **Type-Safe Queries** — SensibleQL is 100% type-safe, catch errors at compile time
+- **MCP Ready** — *(Coming Soon)* Connect AI agents via MCP server
+
+---
+
 ## Documentation
 
 | Section | Description |
 |---|---|
 | [Getting Started](getting-started/intro.md) | Installation and setup |
 | [SensibleQL](sensibleql/overview.md) | Query language reference |
-| [CLI](cli/getting-started.md) | Command-line tool guide |
+| [CLI](cli/getting-started.md) | Command-line tool guide (called "nexus") |
 | [SDKs](sdks/overview.md) | TypeScript, Python, and Rust SDKs |
 | [Features](features/overview.md) | Full feature overview |
+| [Programming Interfaces](programming-interfaces/5-minutes.md) | Rust embedded API in 5 minutes |
 
 ---
 

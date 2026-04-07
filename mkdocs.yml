@@ -44,25 +44,28 @@ markdown_extensions:
 
 nav:
   - Home: .
-  - Getting Started:
-    - Overview: getting-started/intro.md
-    - Installation: getting-started/installation.md
-  - SensibleQL:
-    - Overview: sensibleql/overview.md
-    - Schema Definition: sensibleql/schema-definition.md
-    - CRUD Operations: sensibleql/crud-operations.md
-    - Graph Traversals: sensibleql/traversals.md
-    - Vector Operations: sensibleql/vector-operations.md
-  - CLI:
-    - Getting Started: cli/getting-started.md
-  - SDKs:
-    - Overview: sdks/overview.md
+  - For Non-Technical Users:
+    - Explorer Quick Start: getting-started/intro.md
+  - For Developers:
+    - Getting Started:
+      - Overview: getting-started/intro.md
+      - Installation: getting-started/installation.md
+    - SensibleQL:
+      - Overview: sensibleql/overview.md
+      - Schema Definition: sensibleql/schema-definition.md
+      - CRUD Operations: sensibleql/crud-operations.md
+      - Graph Traversals: sensibleql/traversals.md
+      - Vector Operations: sensibleql/vector-operations.md
+    - CLI:
+      - Getting Started: cli/getting-started.md
+    - SDKs:
+      - Overview: sdks/overview.md
+  - Programming Interfaces:
+    - 5 Minutes: programming-interfaces/5-minutes.md
   - Features:
     - Overview: features/overview.md
   - Overview:
     - About: overview/about.md
     - Distinctive Features: overview/distinctive-features.md
     - When to Use: overview/when-to-use.md
-  - Programming Interfaces:
-    - 5 Minutes: programming-interfaces/5-minutes.md
 

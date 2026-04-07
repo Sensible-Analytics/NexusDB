@@ -132,7 +132,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 ## Next Steps
 
-- Check out the [API Reference](./api-reference.md) for complete documentation
-- Learn about [SensibleQL](../query-language/syntax.md) for powerful querying
-- Explore the [Features](../features/README.md) to understand advanced capabilities
-- See the [Getting Started Guide](../../overview/getting-started.md) for more detailed examples
+- Learn about [SensibleQL](../sensibleql/overview.md) for powerful querying
+- Explore the [Features](../features/overview.md) to understand advanced capabilities
+- Check out the [CLI Guide](../cli/getting-started.md) for deployment options
