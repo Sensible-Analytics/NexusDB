@@ -45,8 +45,7 @@
       "exceptionDomain": "",
       "signingIdentity": "-",
       "entitlements": "./entitlements.plist",
-      "providerShortName": null,
-      "createDmgArtifacts": true
+      "providerShortName": null
     },
     "windows": {
       "certificateThumbprint": null,
