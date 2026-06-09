@@ -1,0 +1,12 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: SensibleDB
+  description: "Embedded Graph-Vector Database - Graph + Vector + Embedded, like SQLite for knowledge graphs"
+  annotations:
+    github.com/project-slug: Sensible-Analytics/SensibleDB
+    backstage.io/techdocs-ref: dir:.
+spec:
+  type: library
+  lifecycle: production
+  owner: sensible-analytics/engineering
